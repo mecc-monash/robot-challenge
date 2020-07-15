@@ -4,23 +4,40 @@ import Car from './Car.js';
 import Board from './Board.js';
 import Lights from './Lights.js';
 
-let scene, camera, renderer, lights, car, board;
+let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {};
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
+
+let INV_MAX_FPS = 1 / 60;
+let frameDelta = 0;
 
 init();
 animate();
 
 function init() {
+    initThreeJS();
+    initWorld();
+}
+
+function animate() {
+    frameDelta += clock.getDelta();
+    while (frameDelta >= INV_MAX_FPS) {
+        update(INV_MAX_FPS);
+        frameDelta -= INV_MAX_FPS;
+    }
+
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+
+function initThreeJS() {
     scene = new THREE.Scene();
-    // scene.add(new THREE.AxesHelper(10));
+    scene.add(new THREE.AxesHelper(10));
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(20, 8, -20);
 
-    board = new Board(scene);
-    lights = new Lights(scene);
-    car = new Car(scene);
+    clock = new THREE.Clock();
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -42,10 +59,14 @@ function init() {
     window.addEventListener('keyup', keyUp);
 }
 
-function animate() {
-    requestAnimationFrame(animate);
-    car.update(keyboard);
-    renderer.render(scene, camera);
+function initWorld() {
+    board = new Board(scene);
+    lights = new Lights(scene);
+    car = new Car(scene);
+}
+
+function update(delta) {
+    car.update(keyboard, delta);
 }
 
 function keyDown(event) {

@@ -2,14 +2,16 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
 
-var player = {
-    height: 1.8,
-    speed: 0.2,
-    turnSpeed: Math.PI * 0.05,
+let carProperties = {
+    accelRate: 60,
+    turnSpeed: Math.PI * 5,
+    friction: 0.05,
 };
 
-export default class Car {
+export default class Car extends THREE.Object3D {
     constructor(scene) {
+        super();
+        this.speed = 0;
         // Load car model and materials
         this.car = new THREE.Group();
         var mtlLoader = new MTLLoader();
@@ -32,29 +34,29 @@ export default class Car {
         });
     }
 
-    setSpeedA(speed) {
-
-    }
-
-    setSpeedB(speed) {
-
-    }
-
-    update(keyboard) {
+    update(keyboard, delta) {
         // RHS Keyboard movement inputs
+        // Accelerate
         if (keyboard[75]) { // K key
-            this.car.position.x -= Math.sin(this.car.rotation.y) * player.speed;
-            this.car.position.z -= Math.cos(this.car.rotation.y) * player.speed;
+            this.speed -= carProperties.accelRate * delta;
         }
+        // Decelerate
         if (keyboard[73]) { // I key
-            this.car.position.x += Math.sin(this.car.rotation.y) * player.speed;
-            this.car.position.z += Math.cos(this.car.rotation.y) * player.speed;
+            this.speed += carProperties.accelRate * delta;
         }
+        // Turn anticlockwise
         if (keyboard[74]) { // J key
-            this.car.rotation.y += player.turnSpeed;
+            this.car.rotation.y += carProperties.turnSpeed * delta;
         }
+        // Turn clockwise
         if (keyboard[76]) { // L key
-            this.car.rotation.y -= player.turnSpeed;
+            this.car.rotation.y -= carProperties.turnSpeed * delta;
         }
+
+        // Integrate velocity
+        this.car.position.x += Math.sin(this.car.rotation.y) * this.speed * delta;
+        this.car.position.z += Math.cos(this.car.rotation.y) * this.speed * delta;
+
+        this.speed *= (1 - carProperties.friction);
     }
 }
