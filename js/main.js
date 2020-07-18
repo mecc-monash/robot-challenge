@@ -35,7 +35,7 @@ function initThreeJS() {
     scene = new THREE.Scene();
     scene.add(new THREE.AxesHelper(10));
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
-    camera.position.set(20, 8, -20);
+    camera.position.set(41, 11, 41);
 
     clock = new THREE.Clock();
 
@@ -52,6 +52,8 @@ function initThreeJS() {
     let controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = 0.95 * Math.PI / 2;
     controls.enableZoom = true;
+    controls.target = new THREE.Vector3(15, 0, 15);
+    controls.update();
 
     // Event listeners
     window.addEventListener('resize', onWindowResize, false);
@@ -61,12 +63,16 @@ function initThreeJS() {
 
 function initWorld() {
     board = new Board(scene);
+    board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene);
+    // car.setSpeedA(180);
+    // car.setSpeedB(179);
 }
 
 function update(delta) {
     car.update(keyboard, delta);
+    board.update(car.car.position);
 }
 
 function keyDown(event) {

@@ -6,12 +6,15 @@ let carProperties = {
     accelRate: 60,
     turnSpeed: Math.PI * 5,
     friction: 0.05,
+    diffSpeedScaleFactor: 0.01,
+    rotateSpeedScaleFactor: 0.01,
 };
 
 export default class Car extends THREE.Object3D {
     constructor(scene) {
         super();
         this.speed = 0;
+        this.diffSpeed = { a: 0, b: 0 };
         // Load car model and materials
         this.car = new THREE.Group();
         var mtlLoader = new MTLLoader();
@@ -25,13 +28,23 @@ export default class Car extends THREE.Object3D {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        // let bbox = new THREE.BoxHelper(child);
+                        // scene.add(bbox)
                     }
                 });
-                this.car.add(object);
+                let boundingBox = new THREE.BoxHelper(object);
+                scene.add(boundingBox)
+                this.car = object;
+                scene.add(this.car);
             });
-
-            scene.add(this.car);
         });
+    }
+
+    setSpeedA(newSpeed) {
+        this.diffSpeed.a = newSpeed;
+    }
+    setSpeedB(newSpeed) {
+        this.diffSpeed.b = newSpeed;
     }
 
     update(keyboard, delta) {
@@ -51,6 +64,12 @@ export default class Car extends THREE.Object3D {
         // Turn clockwise
         if (keyboard[76]) { // L key
             this.car.rotation.y -= carProperties.turnSpeed * delta;
+        }
+
+        // Differential steering approximation
+        if (this.diffSpeed.a !== 0 && this.diffSpeed.b !== 0) {
+            this.car.rotation.y += carProperties.rotateSpeedScaleFactor * this.diffSpeed.a / this.diffSpeed.b;
+            this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b)/2;
         }
 
         // Integrate velocity
