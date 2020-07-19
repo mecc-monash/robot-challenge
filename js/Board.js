@@ -51,16 +51,17 @@ export default class Board {
         }
     }
 
-    overlapsGoal(playerPos) {
-        let overlapsGoal = false;
-        const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
-        const leftBound = this.plane.position.x - tileWidth / 2;
-        const rightBound = leftBound + tileWidth;
-        const topBound = this.plane.position.z - tileWidth / 2;
-        const bottomBound = topBound + tileWidth;
-        if (playerPos.x > leftBound && playerPos.x < rightBound && playerPos.z > topBound && playerPos.z < bottomBound) {
-            overlapsGoal = true;
-        }
-        return overlapsGoal;
+    overlapsGoal(corners) {
+        return corners.every(point => {
+            const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
+            const leftBound = this.plane.position.x - tileWidth / 2;
+            const rightBound = leftBound + tileWidth;
+            const topBound = this.plane.position.z - tileWidth / 2;
+            const bottomBound = topBound + tileWidth;
+            if (point.x > leftBound && point.x < rightBound && point.z > topBound && point.z < bottomBound) {
+                return true;
+            } 
+            return false;
+        })
     }
 }

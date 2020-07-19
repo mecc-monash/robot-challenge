@@ -72,7 +72,7 @@ function initWorld() {
 
 function update(delta) {
     car.update(keyboard, delta);
-    board.update(car.car.position);
+    board.update(car.corners());
 }
 
 function keyDown(event) {

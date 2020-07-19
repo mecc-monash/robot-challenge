@@ -13,10 +13,19 @@ let carProperties = {
 export default class Car extends THREE.Object3D {
     constructor(scene) {
         super();
+
+        this.cornerMarkers = [];
+        for (let i = 0; i < 4; i++) {
+            this.cornerMarkers.push(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 'green' })));
+            scene.add(this.cornerMarkers[this.cornerMarkers.length - 1]);
+        }
+
         this.speed = 0;
         this.diffSpeed = { a: 0, b: 0 };
+
         // Load car model and materials
         this.car = new THREE.Group();
+        this.size = new THREE.Vector3();
         var mtlLoader = new MTLLoader();
         mtlLoader.load('models/cars/taxi.mtl', (materials) => {
             materials.preload();
@@ -24,16 +33,20 @@ export default class Car extends THREE.Object3D {
             loader.setMaterials(materials);
 
             loader.load('models/cars/taxi.obj', (object) => {
-                object.traverse(function (child) {
+                // Get size of main geometry for use in collision detection
+                let mainGeometry = object.children[0].geometry;
+                mainGeometry.computeBoundingBox();
+                let size = new THREE.Vector3();
+                mainGeometry.boundingBox.getSize(size);
+                this.size = size;
+
+                // Enable shadows for each of the children meshes
+                object.traverse(child => {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
-                        // let bbox = new THREE.BoxHelper(child);
-                        // scene.add(bbox)
                     }
                 });
-                let boundingBox = new THREE.BoxHelper(object);
-                scene.add(boundingBox)
                 this.car = object;
                 scene.add(this.car);
             });
@@ -69,7 +82,7 @@ export default class Car extends THREE.Object3D {
         // Differential steering approximation
         if (this.diffSpeed.a !== 0 && this.diffSpeed.b !== 0) {
             this.car.rotation.y += carProperties.rotateSpeedScaleFactor * this.diffSpeed.a / this.diffSpeed.b;
-            this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b)/2;
+            this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b) / 2;
         }
 
         // Integrate velocity
@@ -77,5 +90,22 @@ export default class Car extends THREE.Object3D {
         this.car.position.z += Math.cos(this.car.rotation.y) * this.speed * delta;
 
         this.speed *= (1 - carProperties.friction);
+    }
+
+    corners() {
+        let corners = [
+            new THREE.Vector3(-this.size.x / 2, 0, -this.size.z / 2),
+            new THREE.Vector3(this.size.x / 2, 0, -this.size.z / 2),
+            new THREE.Vector3(this.size.x / 2, 0, this.size.z / 2),
+            new THREE.Vector3(-this.size.x / 2, 0, this.size.z / 2),
+        ];
+
+        // transform corners to world coordinate from
+        corners.forEach((point, index) => {
+            point.applyMatrix4(this.car.matrixWorld);
+            this.cornerMarkers[index].position.copy(point)
+        });
+
+        return corners;
     }
 }
