@@ -6,7 +6,7 @@ import Lights from './Lights.js';
 import Micro from '../Micro.js';
 
 let scene, camera, renderer, lights, car, board, clock;
-let keyboard = {};
+let keyboard = {}, keyboardControlsEnabled;
 let micro;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
@@ -35,7 +35,7 @@ function animate() {
 
 function initThreeJS() {
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x2b6276);
+    scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
@@ -57,6 +57,17 @@ function initThreeJS() {
     controls.enableZoom = true;
     controls.target = new THREE.Vector3(15, 0, 15);
     controls.update();
+
+    // GUI
+    let Params = function () {
+        this.bgColour = '#232323';
+        this.keyboardControls = false;
+    };
+    let text = new Params();
+    let gui = new dat.GUI();
+    let bgController = gui.addColor(text, 'bgColour');
+    bgController.onChange(value => scene.background = new THREE.Color(value));
+    keyboardControlsEnabled = gui.add(text, 'keyboardControls');
 
     // Event listeners
     window.addEventListener('resize', onWindowResize, false);
@@ -80,7 +91,9 @@ function update(delta) {
 }
 
 function keyDown(event) {
-    keyboard[event.keyCode] = true;
+    if (keyboardControlsEnabled?.getValue()) {
+        keyboard[event.keyCode] = true;
+    }
 }
 
 function keyUp(event) {
