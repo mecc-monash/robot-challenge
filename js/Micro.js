@@ -1,11 +1,14 @@
 
+// Your code goes in the setup and loop functions
+// You can also create other functions to help you organise your code
 class Micro {
-    constructor(car) {
-        this.car = car;
+    constructor(carConn) {
+        this.car = carConn;
         this.startTime = Date.now();
     }
 
     setup() {
+        // Your code goes here
         this.car.setSpeedA(200);
         this.car.setSpeedB(200);
         setTimeout(() => this.car.setSpeedA(250), 1600);
@@ -16,6 +19,7 @@ class Micro {
     }
 
     loop() {
+        // And here
     }
 
     millis() {

@@ -24,7 +24,7 @@ export default class Car extends THREE.Object3D {
         this.diffSpeed = { a: 0, b: 0 };
 
         // Load car model and materials
-        this.car = new THREE.Group();
+        this.carObj = new THREE.Group();
         this.size = new THREE.Vector3();
         var mtlLoader = new MTLLoader();
         mtlLoader.load('models/cars/taxi.mtl', (materials) => {
@@ -47,18 +47,11 @@ export default class Car extends THREE.Object3D {
                         child.receiveShadow = true;
                     }
                 });
-                this.car = object;
-                scene.add(this.car);
-                this.car.position.set(7.5, 0, 7.5);
+                this.carObj = object;
+                scene.add(this.carObj);
+                this.carObj.position.set(7.5, 0, 7.5);
             });
         });
-    }
-
-    setSpeedA(newSpeed) {
-        this.diffSpeed.a = newSpeed;
-    }
-    setSpeedB(newSpeed) {
-        this.diffSpeed.b = newSpeed;
     }
 
     update(keyboard, delta) {
@@ -73,22 +66,22 @@ export default class Car extends THREE.Object3D {
         }
         // Turn anticlockwise
         if (keyboard[74]) { // J key
-            this.car.rotation.y += carProperties.turnSpeed * delta;
+            this.carObj.rotation.y += carProperties.turnSpeed * delta;
         }
         // Turn clockwise
         if (keyboard[76]) { // L key
-            this.car.rotation.y -= carProperties.turnSpeed * delta;
+            this.carObj.rotation.y -= carProperties.turnSpeed * delta;
         }
 
         // Differential steering approximation
         if (this.diffSpeed.a !== 0 && this.diffSpeed.b !== 0) {
-            this.car.rotation.y += carProperties.rotateSpeedScaleFactor * (this.diffSpeed.a -  this.diffSpeed.b) / 180;
+            this.carObj.rotation.y += carProperties.rotateSpeedScaleFactor * (this.diffSpeed.a -  this.diffSpeed.b) / 180;
             this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b) / 2;
         }
 
         // Integrate velocity
-        this.car.position.x += Math.sin(this.car.rotation.y) * this.speed * delta;
-        this.car.position.z += Math.cos(this.car.rotation.y) * this.speed * delta;
+        this.carObj.position.x += Math.sin(this.carObj.rotation.y) * this.speed * delta;
+        this.carObj.position.z += Math.cos(this.carObj.rotation.y) * this.speed * delta;
 
         this.speed *= (1 - carProperties.friction);
     }
@@ -103,7 +96,7 @@ export default class Car extends THREE.Object3D {
 
         // transform corners to world coordinate from
         corners.forEach((point, index) => {
-            point.applyMatrix4(this.car.matrixWorld);
+            point.applyMatrix4(this.carObj.matrixWorld);
             this.cornerMarkers[index].position.copy(point)
         });
 

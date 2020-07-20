@@ -3,11 +3,12 @@ import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/Orb
 import Car from './Car.js';
 import Board from './Board.js';
 import Lights from './Lights.js';
-import Micro from '../Micro.js';
+import Micro from './Micro.js';
+import CarConnection from './CarConnection.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
-let micro;
+let micro, carConn;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
@@ -68,6 +69,10 @@ function initThreeJS() {
     let bgController = gui.addColor(text, 'bgColour');
     bgController.onChange(value => scene.background = new THREE.Color(value));
     keyboardControlsEnabled = gui.add(text, 'keyboardControls');
+    keyboardControlsEnabled.onChange(value => { if(value) {
+        carConn.setSpeedA(0);
+        carConn.setSpeedB(0);
+    }});
 
     // Event listeners
     window.addEventListener('resize', onWindowResize, false);
@@ -80,7 +85,8 @@ function initWorld() {
     board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene);
-    micro = new Micro(car);
+    carConn = new CarConnection(car);
+    micro = new Micro(carConn);
     micro.setup();
 }
 
