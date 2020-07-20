@@ -14,6 +14,7 @@ export default class Car extends THREE.Object3D {
     constructor(scene) {
         super();
 
+        scene.add(this);
         this.cornerMarkers = [];
         for (let i = 0; i < 4; i++) {
             this.cornerMarkers.push(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 'green' })));
@@ -36,9 +37,7 @@ export default class Car extends THREE.Object3D {
                 // Get size of main geometry for use in collision detection
                 let mainGeometry = object.children[0].geometry;
                 mainGeometry.computeBoundingBox();
-                let size = new THREE.Vector3();
-                mainGeometry.boundingBox.getSize(size);
-                this.size = size;
+                mainGeometry.boundingBox.getSize(this.size);
 
                 // Enable shadows for each of the children meshes
                 object.traverse(child => {
@@ -48,8 +47,9 @@ export default class Car extends THREE.Object3D {
                     }
                 });
                 this.carObj = object;
-                scene.add(this.carObj);
-                this.carObj.position.set(7.5, 0, 7.5);
+                scene.add(this);
+                this.add(this.carObj);
+                this.position.set(7.5, 0, 7.5);
             });
         });
     }
@@ -66,24 +66,25 @@ export default class Car extends THREE.Object3D {
         }
         // Turn anticlockwise
         if (keyboard[74]) { // J key
-            this.carObj.rotation.y += carProperties.turnSpeed * delta;
+            this.rotation.y += carProperties.turnSpeed * delta;
         }
         // Turn clockwise
         if (keyboard[76]) { // L key
-            this.carObj.rotation.y -= carProperties.turnSpeed * delta;
+            this.rotation.y -= carProperties.turnSpeed * delta;
         }
 
         // Differential steering approximation
         if (this.diffSpeed.a !== 0 && this.diffSpeed.b !== 0) {
-            this.carObj.rotation.y += carProperties.rotateSpeedScaleFactor * (this.diffSpeed.a -  this.diffSpeed.b) / 180;
+            this.rotation.y += carProperties.rotateSpeedScaleFactor * (this.diffSpeed.a -  this.diffSpeed.b) / 180;
             this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b) / 2;
         }
 
         // Integrate velocity
-        this.carObj.position.x += Math.sin(this.carObj.rotation.y) * this.speed * delta;
-        this.carObj.position.z += Math.cos(this.carObj.rotation.y) * this.speed * delta;
+        this.position.x += Math.sin(this.rotation.y) * this.speed * delta;
+        this.position.z += Math.cos(this.rotation.y) * this.speed * delta;
 
         this.speed *= (1 - carProperties.friction);
+
     }
 
     corners() {

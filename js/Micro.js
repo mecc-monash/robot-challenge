@@ -5,21 +5,26 @@ class Micro {
     constructor(carConn) {
         this.car = carConn;
         this.startTime = Date.now();
+        this.colourSensors = [];
+    }
+
+    addColourSensor(sensor) {
+        this.colourSensors.push(sensor);
     }
 
     setup() {
-        // Your code goes here
-        this.car.setSpeedA(200);
-        this.car.setSpeedB(200);
-        setTimeout(() => this.car.setSpeedA(250), 1600);
-        setTimeout(() => {
-            this.car.setSpeedA(0);
-            this.car.setSpeedB(0);
-        }, 11500);
+        // Your code goes here. This function will be run once 
+        this.car.setSpeedA(280);
+        this.car.setSpeedB(230);
     }
 
     loop() {
-        // And here
+        // Your code goes here. This function will be run over and over again
+        let rgb = this.colourSensors[0].readRGB();
+        if (rgb.g > 128) {
+            this.car.setSpeedA(0);
+            this.car.setSpeedB(0);
+        }
     }
 
     millis() {

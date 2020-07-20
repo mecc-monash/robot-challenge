@@ -7,6 +7,7 @@ let BOARD_SIZE = {
 
 export default class Board {
     constructor(scene) {
+        this.goalReached = false;
         let floorCover = new THREE.MeshBasicMaterial({ color: 0x999999 });
         let meshFloor = new THREE.Mesh(
             new THREE.PlaneGeometry(BOARD_SIZE.width, BOARD_SIZE.width, 10, 10),
@@ -46,8 +47,10 @@ export default class Board {
     update(playerPos) {
         if (this.overlapsGoal(playerPos)) {
             this.plane.material.color.setHex(0x0CE112);
+            this.goalReached = true;
         } else {
             this.plane.material.color.setHex(0xff3019);
+            this.goalReached = false;
         }
     }
 
@@ -60,8 +63,20 @@ export default class Board {
             const bottomBound = topBound + tileWidth;
             if (point.x > leftBound && point.x < rightBound && point.z > topBound && point.z < bottomBound) {
                 return true;
-            } 
+            }
             return false;
         })
+    }
+
+    readRGB(pos) {
+        let rgb = { r: 123, g: 123, b: 123 };
+        if (this.overlapsGoal([pos])) {
+            if (this.goalReached) {
+                return { r: 0, g: 255, b: 0 };
+            } else {
+                return { r: 255, g: 0, b: 0 };
+            }
+        }
+        return rgb;
     }
 }

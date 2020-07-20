@@ -5,10 +5,11 @@ import Board from './Board.js';
 import Lights from './Lights.js';
 import Micro from './Micro.js';
 import CarConnection from './CarConnection.js';
+import ColourSensor from './ColourSensor.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
-let micro, carConn;
+let micro, carConn, colourSensor;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
@@ -62,7 +63,7 @@ function initThreeJS() {
     // GUI
     let Params = function () {
         this.bgColour = '#232323';
-        this.keyboardControls = false;
+        this.keyboardControls = true;
     };
     let text = new Params();
     let gui = new dat.GUI();
@@ -86,7 +87,9 @@ function initWorld() {
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125/2, 0, 2.025/2), board);
     micro = new Micro(carConn);
+    micro.addColourSensor(colourSensor);
     micro.setup();
 }
 
