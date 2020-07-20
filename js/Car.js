@@ -17,7 +17,7 @@ export default class Car extends THREE.Object3D {
         this.cornerMarkers = [];
         for (let i = 0; i < 4; i++) {
             this.cornerMarkers.push(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 'green' })));
-            scene.add(this.cornerMarkers[this.cornerMarkers.length - 1]);
+            // scene.add(this.cornerMarkers[this.cornerMarkers.length - 1]);
         }
 
         this.speed = 0;
@@ -49,6 +49,7 @@ export default class Car extends THREE.Object3D {
                 });
                 this.car = object;
                 scene.add(this.car);
+                this.car.position.set(7.5, 0, 7.5);
             });
         });
     }
@@ -81,7 +82,7 @@ export default class Car extends THREE.Object3D {
 
         // Differential steering approximation
         if (this.diffSpeed.a !== 0 && this.diffSpeed.b !== 0) {
-            this.car.rotation.y += carProperties.rotateSpeedScaleFactor * this.diffSpeed.a / this.diffSpeed.b;
+            this.car.rotation.y += carProperties.rotateSpeedScaleFactor * (this.diffSpeed.a -  this.diffSpeed.b) / 180;
             this.speed = carProperties.diffSpeedScaleFactor * (this.diffSpeed.a + this.diffSpeed.b) / 2;
         }
 

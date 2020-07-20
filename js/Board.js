@@ -21,7 +21,7 @@ export default class Board {
         let grid = new THREE.GridHelper(BOARD_SIZE.width, BOARD_SIZE.divisions, 0x333333, 0x333333);
         grid.material.opacity = 0.9;
         grid.material.transparent = true;
-        grid.position.set(BOARD_SIZE.width / 2, 0, BOARD_SIZE.width / 2);
+        grid.position.set(BOARD_SIZE.width / 2, 0.01, BOARD_SIZE.width / 2);
         scene.add(grid);
 
         // Goal tile

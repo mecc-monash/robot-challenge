@@ -3,9 +3,11 @@ import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/Orb
 import Car from './Car.js';
 import Board from './Board.js';
 import Lights from './Lights.js';
+import Micro from '../Micro.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {};
+let micro;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
@@ -33,7 +35,8 @@ function animate() {
 
 function initThreeJS() {
     scene = new THREE.Scene();
-    scene.add(new THREE.AxesHelper(10));
+    scene.background = new THREE.Color(0x2b6276);
+    // scene.add(new THREE.AxesHelper(10));
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
 
@@ -66,12 +69,13 @@ function initWorld() {
     board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene);
-    // car.setSpeedA(180);
-    // car.setSpeedB(179);
+    micro = new Micro(car);
+    micro.setup();
 }
 
 function update(delta) {
     car.update(keyboard, delta);
+    micro.loop();
     board.update(car.corners());
 }
 
