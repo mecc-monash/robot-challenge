@@ -16,6 +16,8 @@ export default class Board {
         meshFloor.position.set(BOARD_SIZE.width / 2, 0, BOARD_SIZE.width / 2);
         meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
         meshFloor.receiveShadow = true;
+        meshFloor.matrixAutoUpdate = false; // Disable auto-updating, as we know the state will not change
+        meshFloor.updateMatrix();
         scene.add(meshFloor);
 
         // Grid

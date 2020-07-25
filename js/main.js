@@ -102,7 +102,15 @@ function update(delta) {
 function keyDown(event) {
     if (keyboardControlsEnabled?.getValue()) {
         keyboard[event.keyCode] = true;
+    } 
+    if (event.keyCode === 82) { // r key pressed 
+        resetWorld();
     }
+}
+
+function resetWorld() {
+    car.reset();
+    micro.reset();
 }
 
 function keyUp(event) {

@@ -31,6 +31,11 @@ class Micro {
         let elapsedTime = Date.now() - this.startTime;
         return elapsedTime;
     }
+
+    reset() {
+        this.startTime = Date.now();
+        this.setup();
+    }
 }
 
 export default Micro;

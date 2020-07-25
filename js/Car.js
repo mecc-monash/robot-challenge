@@ -23,6 +23,7 @@ export default class Car extends THREE.Object3D {
 
         this.speed = 0;
         this.diffSpeed = { a: 0, b: 0 };
+        this.initialPos = new THREE.Vector3(7.5, 0, 7.5);
 
         // Load car model and materials
         this.carObj = new THREE.Group();
@@ -49,7 +50,7 @@ export default class Car extends THREE.Object3D {
                 this.carObj = object;
                 scene.add(this);
                 this.add(this.carObj);
-                this.position.set(7.5, 0, 7.5);
+                this.position.copy(this.initialPos);
             });
         });
     }
@@ -102,5 +103,13 @@ export default class Car extends THREE.Object3D {
         });
 
         return corners;
+    }
+
+    reset() {
+        // Reset position and velocity
+        this.position.copy(this.initialPos);
+        this.diffSpeed = { a: 0, b: 0 };
+        this.rotation.set(0, 0, 0);
+        this.updateMatrixWorld();
     }
 }
