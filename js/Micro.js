@@ -14,8 +14,8 @@ class Micro {
 
     setup() {
         // Your code goes here. This function will be run once 
-        this.car.setSpeedA(280);
-        this.car.setSpeedB(230);
+        this.car.setSpeedA(560);
+        this.car.setSpeedB(460);
     }
 
     loop() {

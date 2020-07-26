@@ -19,8 +19,24 @@
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
     <script src="dat.gui.min.js"></script>
-    <script type="module" src="js/main.js">
-    </script>
+    <script type="module" src="js/main.js"></script>
+    <div id="menu-overlay">
+        <div id="menu-box">
+            <div id="menu-title-bar">
+                Menu
+            </div>
+            <div id="menu-option-container">
+                <div id="menu-option-label">
+                    Level:
+                </div>
+                <div id="menu-option-choice">
+                    <button id="decLevelButton"><</button>
+                    <span id="level-select-value">1</span>
+                    <button id="incLevelButton">></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

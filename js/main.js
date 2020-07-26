@@ -10,11 +10,14 @@ import ColourSensor from './ColourSensor.js';
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
 let micro, carConn, colourSensor;
+let paused = true;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
 let INV_MAX_FPS = 1 / 60;
 let frameDelta = 0;
+
+const levelCount = 2;
 
 init();
 animate();
@@ -70,15 +73,19 @@ function initThreeJS() {
     let bgController = gui.addColor(text, 'bgColour');
     bgController.onChange(value => scene.background = new THREE.Color(value));
     keyboardControlsEnabled = gui.add(text, 'keyboardControls');
-    keyboardControlsEnabled.onChange(value => { if(value) {
-        carConn.setSpeedA(0);
-        carConn.setSpeedB(0);
-    }});
+    keyboardControlsEnabled.onChange(value => {
+        if (value) {
+            carConn.setSpeedA(0);
+            carConn.setSpeedB(0);
+        }
+    });
 
     // Event listeners
     window.addEventListener('resize', onWindowResize, false);
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
+    document.getElementById('incLevelButton').addEventListener('click', incrementLevel);
+    document.getElementById('decLevelButton').addEventListener('click', decrementLevel);
 }
 
 function initWorld() {
@@ -87,13 +94,16 @@ function initWorld() {
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
-    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125/2, 0, 2.025/2), board);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro = new Micro(carConn);
     micro.addColourSensor(colourSensor);
     micro.setup();
 }
 
 function update(delta) {
+    if (paused) {
+        return;
+    }
     car.update(keyboard, delta);
     micro.loop();
     board.update(car.corners());
@@ -102,9 +112,14 @@ function update(delta) {
 function keyDown(event) {
     if (keyboardControlsEnabled?.getValue()) {
         keyboard[event.keyCode] = true;
-    } 
+    }
     if (event.keyCode === 82) { // r key pressed 
-        resetWorld();
+        if (!paused) {
+            resetWorld();
+        }
+    } else if (event.keyCode === 80) { // p key pressed
+        paused = !paused;
+        document.getElementById('menu-overlay').style.display = paused ? 'flex' : 'none';
     }
 }
 
@@ -121,4 +136,20 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+let proposedLevel = 1;
+function incrementLevel() {
+    if (proposedLevel < levelCount) {
+        proposedLevel++;
+        const levelSelect = document.getElementById('level-select-value');
+        levelSelect.innerHTML = proposedLevel;
+    }
+}
+function decrementLevel() {
+    if (proposedLevel - 1 > 0) {
+        proposedLevel--;
+        const levelSelect = document.getElementById('level-select-value');
+        levelSelect.innerHTML = proposedLevel;
+    }
 }

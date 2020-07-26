@@ -1,9 +1,40 @@
-#info {
+#menu-overlay {
 	position: absolute;
-	top: 10px;
 	width: 100%;
 	text-align: center;
 	z-index: 100;
-    display:block;
-    color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(234, 234, 234, 0.3);
+	height: 100vh;
+}
+
+#menu-box {
+	width: 20rem;
+	border: 4px solid black;
+	border-radius: 6px;
+	background-color: white;
+	height: 20rem;
+}
+
+#menu-title-bar {
+	font-size: 2rem;
+	border-bottom: 1px solid black;
+	padding: 0.5rem;
+}
+
+#menu-option-container {
+	display: flex;
+	font-size: 1.5rem;
+	text-align: left;
+	padding: 1rem;
+}
+
+#menu-option-label {
+	flex: 50%;
+}
+#menu-option-choice {
+	text-align: right;
+	flex: 50%;
 }
