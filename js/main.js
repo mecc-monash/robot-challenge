@@ -6,11 +6,12 @@ import Lights from './Lights.js';
 import Micro from './Micro.js';
 import CarConnection from './CarConnection.js';
 import ColourSensor from './ColourSensor.js';
+import Road from './Road.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
-let micro, carConn, colourSensor;
-let paused = true;
+let micro, carConn, colourSensor, road;
+let paused = false;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
@@ -98,6 +99,7 @@ function initWorld() {
     micro = new Micro(carConn);
     micro.addColourSensor(colourSensor);
     micro.setup();
+    road = new Road(scene);
 }
 
 function update(delta) {

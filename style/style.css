@@ -3,7 +3,7 @@
 	width: 100%;
 	text-align: center;
 	z-index: 100;
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 	background-color: rgba(234, 234, 234, 0.3);
