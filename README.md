@@ -8,3 +8,8 @@
 - Go to http://127.0.0.1:5500 in your browser.
 
 Controller code is in `js/Micro.js`
+
+# ThreeJS Resources
+The [three.js examples page](https://threejs.org/examples/) has examples covering a wide range of features in three.js so it's always a great first place to look.
+
+There's also a [useful links page](https://threejs.org/docs/#manual/en/introduction/Useful-links).
