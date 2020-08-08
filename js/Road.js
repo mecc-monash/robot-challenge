@@ -10,6 +10,7 @@ class Road extends THREE.Object3D {
         loader.load('models/roads/straightRoad.glb', (object) => {
             scene.add(object.scene);
             object.scene.position.copy(initialPos);
+            this.road = object.scene;
         });
     }
 }
