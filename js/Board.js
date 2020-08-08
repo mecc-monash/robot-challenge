@@ -5,9 +5,15 @@ let BOARD_SIZE = {
     divisions: 6,
 };
 
+// The board is contains the grid that makes up the ground and the roads.
+// It is responsible for calculating colour values to read by the colour sensor.
 export default class Board {
     constructor(scene) {
+        this.roads = [];
+        this.raycaster = new THREE.Raycaster();
         this.goalReached = false;
+
+        // Grey board
         let floorCover = new THREE.MeshBasicMaterial({ color: 0x999999 });
         let meshFloor = new THREE.Mesh(
             new THREE.PlaneGeometry(BOARD_SIZE.width, BOARD_SIZE.width, 10, 10),
@@ -39,6 +45,10 @@ export default class Board {
         scene.add(plane);
     }
 
+    addRoad(road) {
+        this.roads.push(road);
+    }
+
     setGoal(x, y) {
         this.goal = { x: x, y: y };
         const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
@@ -57,6 +67,7 @@ export default class Board {
     }
 
     overlapsGoal(corners) {
+        // checks the array of 3D points for overlap with the goal tile
         return corners.every(point => {
             const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
             const leftBound = this.plane.position.x - tileWidth / 2;
@@ -67,18 +78,34 @@ export default class Board {
                 return true;
             }
             return false;
-        })
+        });
     }
 
     readRGB(pos) {
-        let rgb = { r: 123, g: 123, b: 123 };
+        let rgb = { r: 123, g: 123, b: 123 }; // grey colour of board
         if (this.overlapsGoal([pos])) {
             if (this.goalReached) {
-                return { r: 0, g: 255, b: 0 };
+                return { r: 0, g: 255, b: 0 }; // red goal tile
             } else {
-                return { r: 255, g: 0, b: 0 };
+                return { r: 255, g: 0, b: 0 }; // green goal reached tile
             }
         }
+
+        // Check for overlap with roads and road lines
+        this.roads.forEach(road => {
+            // Cast a ray from the colour sensor to the children of the road object.
+            // Raycasting in the upward direction seems to pick out the road lines. 
+            // Most likely the road lines are slightly above the colour sensor.
+            const upwards = new THREE.Vector3(0, 1, 0);
+            this.raycaster.set(pos, upwards);
+            const intersects = this.raycaster.intersectObjects(road.road?.children[0].children);
+            if (intersects.length > 0) {
+                const color = intersects[0].object.material.color; // the first intersection is the closest to the sensor
+                const color255 = { r: color.r * 255, g: color.g * 255, b: color.b * 255 };
+                rgb = color255;
+            }
+        });
+
         return rgb;
     }
 }

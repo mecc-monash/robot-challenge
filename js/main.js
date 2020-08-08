@@ -39,6 +39,13 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+function onMouseMove(event) {
+    // calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+}
+
 function initThreeJS() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
@@ -90,8 +97,10 @@ function initThreeJS() {
 }
 
 function initWorld() {
+    road = new Road(scene);
     board = new Board(scene);
     board.setGoal(4, 4);
+    board.addRoad(road);
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
@@ -99,7 +108,6 @@ function initWorld() {
     micro = new Micro(carConn);
     micro.addColourSensor(colourSensor);
     micro.setup();
-    road = new Road(scene);
 }
 
 function update(delta) {

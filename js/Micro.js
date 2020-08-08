@@ -25,6 +25,7 @@ class Micro {
             this.car.setSpeedA(0);
             this.car.setSpeedB(0);
         }
+        console.log(rgb)
     }
 
     millis() {
