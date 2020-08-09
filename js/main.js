@@ -6,11 +6,12 @@ import Lights from './Lights.js';
 import Micro from './Micro.js';
 import CarConnection from './CarConnection.js';
 import ColourSensor from './ColourSensor.js';
+import UltrasonicSensor from './UltrasonicSensor.js';
 import Road from './Road.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
-let micro, carConn, colourSensor, road;
+let micro, carConn, colourSensor, ultrasonicSensor, road;
 let paused = false;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
@@ -101,13 +102,17 @@ function initWorld() {
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
+    board.addObstacle(0, 0);
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
+    ultrasonicSensor = new UltrasonicSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board, scene);
     micro = new Micro(carConn);
     micro.addColourSensor(colourSensor);
+    micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
+
 }
 
 function update(delta) {

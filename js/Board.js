@@ -10,9 +10,10 @@ let BOARD_SIZE = {
 export default class Board {
     constructor(scene) {
         this.roads = [];
+        this.obstacles = [];
         this.raycaster = new THREE.Raycaster();
         this.goalReached = false;
-
+        this.scene = scene;
         // Grey board
         let floorCover = new THREE.MeshBasicMaterial({ color: 0x999999 });
         let meshFloor = new THREE.Mesh(
@@ -47,6 +48,15 @@ export default class Board {
 
     addRoad(road) {
         this.roads.push(road);
+    }
+
+    addObstacle(x,y) {
+        // TODO: implement proper obstacles
+        var geometry = new THREE.BoxGeometry(10, 10, 10, 1, 1, 1);
+        var material = new THREE.MeshBasicMaterial({color: 0xfffff, wireframe: false});
+        var cube = new THREE.Mesh(geometry, material);
+        this.scene.add(cube);
+        this.obstacles.push(cube);
     }
 
     setGoal(x, y) {
