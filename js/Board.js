@@ -10,9 +10,10 @@ let BOARD_SIZE = {
 export default class Board {
     constructor(scene) {
         this.roads = [];
+        this.obstacles = [];
         this.raycaster = new THREE.Raycaster();
         this.goalReached = false;
-
+        this.scene = scene;
         // Grey board
         let floorCover = new THREE.MeshBasicMaterial({ color: 0x999999 });
         let meshFloor = new THREE.Mesh(
@@ -47,6 +48,15 @@ export default class Board {
 
     addRoad(road) {
         this.roads.push(road);
+    }
+
+    addObstacle(x, y) {
+        // TODO: implement proper obstacles
+        var geometry = new THREE.BoxGeometry(10, 10, 10, 1, 1, 1);
+        var material = new THREE.MeshBasicMaterial({ color: 0xfffff, wireframe: false });
+        var cube = new THREE.Mesh(geometry, material);
+        this.scene.add(cube);
+        this.obstacles.push(cube);
     }
 
     setGoal(x, y) {
@@ -98,11 +108,14 @@ export default class Board {
             // Most likely the road lines are slightly above the colour sensor.
             const upwards = new THREE.Vector3(0, 1, 0);
             this.raycaster.set(pos, upwards);
-            const intersects = this.raycaster.intersectObjects(road.road?.children[0].children);
-            if (intersects.length > 0) {
-                const color = intersects[0].object.material.color; // the first intersection is the closest to the sensor
-                const color255 = { r: color.r * 255, g: color.g * 255, b: color.b * 255 };
-                rgb = color255;
+            const roadChildren = road.road?.children[0].children;
+            if (roadChildren) {
+                const intersects = this.raycaster.intersectObjects(roadChildren);
+                if (intersects.length > 0) {
+                    const color = intersects[0].object.material.color; // the first intersection is the closest to the sensor
+                    const color255 = { r: color.r * 255, g: color.g * 255, b: color.b * 255 };
+                    rgb = color255;
+                }
             }
         });
 

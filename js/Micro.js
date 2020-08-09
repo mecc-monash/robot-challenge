@@ -6,10 +6,15 @@ class Micro {
         this.car = carConn;
         this.startTime = Date.now();
         this.colourSensors = [];
+        this.ultrasonicSensors = [];
     }
 
     addColourSensor(sensor) {
         this.colourSensors.push(sensor);
+    }
+
+    addUltrasonicSensor(sensor) {
+        this.ultrasonicSensors.push(sensor);
     }
 
     setup() {
@@ -20,12 +25,14 @@ class Micro {
 
     loop() {
         // Your code goes here. This function will be run over and over again
-        let rgb = this.colourSensors[0].readRGB();
+        let rgb = this.colourSensors[0]?.readRGB();
+        let distance = this.ultrasonicSensors[0]?.detectForwards();
         if (rgb.g > 128) {
             this.car.setSpeedA(0);
             this.car.setSpeedB(0);
         }
         console.log(rgb)
+        console.log(distance);
     }
 
     millis() {
