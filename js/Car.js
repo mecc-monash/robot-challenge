@@ -1,6 +1,6 @@
-import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
-import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
+import * as THREE from 'https://unpkg.com/three@0.119.1/build/three.module.js';
+import { OBJLoader } from 'https://unpkg.com/three@0.119.1/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'https://unpkg.com/three@0.119.1/examples/jsm/loaders/MTLLoader.js';
 
 let carProperties = {
     accelRate: 60,
