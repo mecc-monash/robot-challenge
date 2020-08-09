@@ -15,10 +15,18 @@ let paused = false;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
 
-let INV_MAX_FPS = 1 / 60;
+const INV_MAX_FPS = 1 / 60;
 let frameDelta = 0;
 
-const levelCount = 2;
+// Get level from localStorage if present
+let currentLevel = localStorage.getItem('level') || 1;
+const levelSelect = document.getElementById('level-select-value');
+levelSelect.innerHTML = currentLevel;
+
+const initWorldArray = [
+    initWorld1, initWorld2, initWorld3,
+];
+const levelCount = initWorldArray.length;
 
 init();
 animate();
@@ -39,17 +47,8 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-function onMouseMove(event) {
-    // calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both components
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-}
-
 function initThreeJS() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x232323);
-    // scene.add(new THREE.AxesHelper(10));
+    // Camera
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
 
@@ -97,7 +96,49 @@ function initThreeJS() {
 }
 
 function initWorld() {
-    road = new Road(scene);
+    initWorldArray[currentLevel - 1]();
+}
+
+function initWorld1() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x232323);
+    // scene.add(new THREE.AxesHelper(10));
+    const roadPos = new THREE.Vector3(9, 0, 22.5);
+    road = new Road(scene, roadPos);
+    board = new Board(scene);
+    board.setGoal(4, 4);
+    board.addRoad(road);
+    lights = new Lights(scene);
+    car = new Car(scene);
+    carConn = new CarConnection(car);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
+    micro = new Micro(carConn);
+    micro.addColourSensor(colourSensor);
+    micro.setup();
+}
+function initWorld2() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x232323);
+    // scene.add(new THREE.AxesHelper(10));
+    const roadPos = new THREE.Vector3(12, 0, 12.5);
+    road = new Road(scene, roadPos);
+    board = new Board(scene);
+    board.setGoal(5, 5);
+    board.addRoad(road);
+    lights = new Lights(scene);
+    car = new Car(scene);
+    carConn = new CarConnection(car);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
+    micro = new Micro(carConn);
+    micro.addColourSensor(colourSensor);
+    micro.setup();
+}
+function initWorld3() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x232323);
+    // scene.add(new THREE.AxesHelper(10));
+    const roadPos = new THREE.Vector3(18, 0, 22.5);
+    road = new Road(scene, roadPos);
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
@@ -148,18 +189,24 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let proposedLevel = 1;
+function storeLevel() {
+    localStorage.setItem('level', currentLevel);
+}
 function incrementLevel() {
-    if (proposedLevel < levelCount) {
-        proposedLevel++;
+    if (currentLevel < levelCount) {
+        currentLevel++;
         const levelSelect = document.getElementById('level-select-value');
-        levelSelect.innerHTML = proposedLevel;
+        levelSelect.innerHTML = currentLevel;
+        storeLevel();
     }
+    initWorld();
 }
 function decrementLevel() {
-    if (proposedLevel - 1 > 0) {
-        proposedLevel--;
+    if (currentLevel - 1 > 0) {
+        currentLevel--;
         const levelSelect = document.getElementById('level-select-value');
-        levelSelect.innerHTML = proposedLevel;
+        levelSelect.innerHTML = currentLevel;
+        storeLevel();
     }
+    initWorld();
 }
