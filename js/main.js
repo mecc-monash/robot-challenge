@@ -112,8 +112,8 @@ function initWorld1() {
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
-    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro = new Micro(carConn);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro.addColourSensor(colourSensor);
     micro.setup();
 }
@@ -129,8 +129,8 @@ function initWorld2() {
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
-    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro = new Micro(carConn);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro.addColourSensor(colourSensor);
     micro.setup();
 }
@@ -147,10 +147,10 @@ function initWorld3() {
     lights = new Lights(scene);
     car = new Car(scene);
     carConn = new CarConnection(car);
-    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
-    ultrasonicSensor = new UltrasonicSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board, scene);
     micro = new Micro(carConn);
+    colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
     micro.addColourSensor(colourSensor);
+    ultrasonicSensor = new UltrasonicSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 
