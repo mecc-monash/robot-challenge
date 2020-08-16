@@ -50,13 +50,15 @@ export default class Board {
         this.roads.push(road);
     }
 
-    addObstacle(x, y) {
-        // TODO: implement proper obstacles
-        var geometry = new THREE.BoxGeometry(10, 10, 10, 1, 1, 1);
-        var material = new THREE.MeshBasicMaterial({ color: 0xfffff, wireframe: false });
+    addObstacle(xPos, yPos, xSize, ySize) {
+        var geometry = new THREE.BoxGeometry(xSize, 1.5, ySize);
+        var material = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: false });
         var cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
         this.obstacles.push(cube);
+        this.obstacles[this.obstacles.length-1].position.x = xPos;
+        this.obstacles[this.obstacles.length-1].position.y = 0.75;
+        this.obstacles[this.obstacles.length-1].position.z = yPos;
     }
 
     setGoal(x, y) {
