@@ -11,7 +11,7 @@ let carProperties = {
 };
 
 export default class Car extends THREE.Object3D {
-    constructor(scene) {
+    constructor(scene, loadingManager) {
         super();
 
         scene.add(this);
@@ -28,10 +28,10 @@ export default class Car extends THREE.Object3D {
         // Load car model and materials
         this.carObj = new THREE.Group();
         this.size = new THREE.Vector3();
-        var mtlLoader = new MTLLoader();
+        var mtlLoader = new MTLLoader(loadingManager);
         mtlLoader.load('models/cars/taxi.mtl', (materials) => {
             materials.preload();
-            var loader = new OBJLoader();
+            var loader = new OBJLoader(loadingManager);
             loader.setMaterials(materials);
 
             loader.load('models/cars/taxi.obj', (object) => {
