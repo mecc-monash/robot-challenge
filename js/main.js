@@ -12,6 +12,7 @@ import Road from './Road.js';
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
 let micro, carConn, colourSensor, ultrasonicSensor, road;
+let loadingManager;
 let paused = false;
 let gameOver = false;
 let SCREEN_WIDTH = window.innerWidth;
@@ -89,12 +90,21 @@ function initThreeJS() {
         }
     });
 
+    // Loading manager
+    loadingManager = new THREE.LoadingManager(); // keeps track of which models have finished downloading
+    loadingManager.onLoad = hideLoadingScreen;
+
     // Event listeners
     window.addEventListener('resize', onWindowResize, false);
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
     document.getElementById('incLevelButton').addEventListener('click', incrementLevel);
     document.getElementById('decLevelButton').addEventListener('click', decrementLevel);
+}
+
+function hideLoadingScreen() {
+    console.log("finished loading")
+    document.getElementById('loading-screen').style.display = 'none';
 }
 
 function initWorld() {
@@ -106,12 +116,12 @@ function initWorld1() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(9, 0, 22.5);
-    road = new Road(scene, roadPos);
+    road = new Road(scene, roadPos, loadingManager);
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
     lights = new Lights(scene);
-    car = new Car(scene);
+    car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
@@ -125,12 +135,12 @@ function initWorld2() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(12, 0, 12.5);
-    road = new Road(scene, roadPos);
+    road = new Road(scene, roadPos, loadingManager);
     board = new Board(scene);
     board.setGoal(5, 5);
     board.addRoad(road);
     lights = new Lights(scene);
-    car = new Car(scene);
+    car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
@@ -144,12 +154,12 @@ function initWorld3() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos);
+    road = new Road(scene, roadPos, loadingManager);
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
     lights = new Lights(scene);
-    car = new Car(scene);
+    car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
@@ -166,15 +176,15 @@ function initWorld4() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos);
+    road = new Road(scene, roadPos, loadingManager);
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
-    board.addObstacle(27.5, 15, 3, 30);    
+    board.addObstacle(27.5, 15, 3, 30);
     board.addObstacle(17.5, 12.5, 3, 10);
 
     lights = new Lights(scene);
-    car = new Car(scene);
+    car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
@@ -191,13 +201,13 @@ function initWorld5() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos);
+    road = new Road(scene, roadPos, loadingManager);
     board = new Board(scene);
     board.setGoal(4, 4);
     board.addRoad(road);
     board.addObstacle(7.5, 7.5, 3, 3);
     lights = new Lights(scene);
-    car = new Car(scene);
+    car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     colourSensor = new ColourSensor(car, new THREE.Vector3(1.125 / 2, 0, 2.025 / 2), board);
@@ -227,7 +237,7 @@ function keyDown(event) {
     }
     if (event.keyCode === 82) { // r key pressed 
         //if (!paused) {
-            resetWorld();
+        resetWorld();
         //}
     }
     else if (event.keyCode === 80) { // p key pressed
