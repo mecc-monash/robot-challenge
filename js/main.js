@@ -206,11 +206,31 @@ function initWorld5() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos, loadingManager);
+    //road = new Road(scene, roadPos);
     board = new Board(scene);
-    board.setGoal(4, 4);
-    board.addRoad(road);
-    board.addObstacle(7.5, 7.5, 3, 3);
+    //board.setGoal(4, 4);
+    //board.addRoad(road);
+
+    // part1
+    board.addObstacle(0, 15, 0.01, 30);
+    board.addObstacle(30, 15, 0.01, 30);
+    board.addObstacle(15, 0, 30, 0.01);
+    board.addObstacle(15, 30, 30, 0.01);
+
+    // part2 
+    board.addObstacle(5, 10, 0.01, 10);
+    board.addObstacle(5, 15, 0.01, 12);
+    board.addObstacle(25, 15, 0.01, 20);
+    board.addObstacle(15, 5, 20, 0.01);
+    board.addObstacle(15, 25, 20, 0.01);
+
+    // part3
+    board.addObstacle(10, 15, 0.01, 10);
+    board.addObstacle(20, 15, 0.01, 10);
+    board.addObstacle(13, 10, 6, 0.01);
+    board.addObstacle(15, 20, 10, 0.01);
+
+
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
