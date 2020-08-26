@@ -221,11 +221,7 @@ function initWorld5() {
 }
 
 function update(delta) {
-    if (gameOver) {
-        paused = true;
-        document.getElementsByName('lose-menu')[0].style.display = 'flex';
-    }
-    if (paused) {
+    if (paused || gameOver) {
         return;
     }
     car.update(keyboard, delta);
@@ -237,6 +233,7 @@ function update(delta) {
         micro.ultrasonicSensors[0]?.detectLeft() <= 0.5 ||
         micro.ultrasonicSensors[0]?.detectRight() <= 0.5) {
         gameOver = true;
+        document.getElementById('lose-menu').style.display = 'flex';
     }
 
 }
@@ -252,7 +249,9 @@ function keyDown(event) {
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
-        document.getElementById('menu-overlay').style.display = paused ? 'flex' : 'none';
+        document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
+        // Show lose menu only if gameOver and not paused
+        document.getElementById('lose-menu').style.display = (gameOver && !paused) ? 'flex' : 'none';
     }
 }
 
@@ -261,9 +260,8 @@ function resetWorld() {
     micro.reset();
     paused = false;
     gameOver = false;
-    document.getElementById('menu-overlay').style.display = paused ? 'flex' : 'none';
-    document.getElementsByName('lose-menu')[0].style.display = 'none';
-
+    document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
+    document.getElementById('lose-menu').style.display = 'none';
 }
 
 function keyUp(event) {
