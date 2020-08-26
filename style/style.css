@@ -1,4 +1,4 @@
-#menu-overlay {
+.menu-overlay {
 	position: absolute;
 	width: 100%;
 	text-align: center;
@@ -10,31 +10,32 @@
 	height: 100vh;
 }
 
-#menu-box {
+.menu-box {
 	width: 20rem;
 	border: 4px solid black;
 	border-radius: 6px;
 	background-color: white;
 	height: 20rem;
+	z-index: 101;
 }
 
-#menu-title-bar {
+.menu-title-bar {
 	font-size: 2rem;
 	border-bottom: 1px solid black;
 	padding: 0.5rem;
 }
 
-#menu-option-container {
+.menu-option-container {
 	display: flex;
 	font-size: 1.5rem;
 	text-align: left;
 	padding: 1rem;
 }
 
-#menu-option-label {
+.menu-option-label {
 	flex: 50%;
 }
-#menu-option-choice {
+.menu-option-choice {
 	text-align: right;
 	flex: 50%;
 }
