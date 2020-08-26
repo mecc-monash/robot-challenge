@@ -229,6 +229,14 @@ function update(delta) {
     car.update(keyboard, delta);
     micro.loop();
     board.update(car.corners());
+
+    if(micro.ultrasonicSensors[0]?.detectForwards() <= 1 ||
+        micro.ultrasonicSensors[0]?.detectBackwards() <= 1 ||
+        micro.ultrasonicSensors[0]?.detectLeft() <= 0.5 ||
+        micro.ultrasonicSensors[0]?.detectRight() <= 0.5) {
+        gameOver = true;
+    }
+
 }
 
 function keyDown(event) {
