@@ -3,7 +3,7 @@ var raycaster = new THREE.Raycaster();
 
 
 class UltrasonicSensor extends THREE.Object3D {
-    constructor(car, mountPos, board, scene) {
+    constructor(car, board, scene) {
         super();
         car.add(this);
         this.position.copy(car.position);
