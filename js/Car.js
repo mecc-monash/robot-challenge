@@ -3,8 +3,8 @@ import { OBJLoader } from 'https://unpkg.com/three@0.119.1/examples/jsm/loaders/
 import { MTLLoader } from 'https://unpkg.com/three@0.119.1/examples/jsm/loaders/MTLLoader.js';
 
 let carProperties = {
-    accelRate: 60,
-    turnSpeed: Math.PI * 5,
+    accelRate: 20,
+    turnSpeed: Math.PI * 0.5,
     friction: 0.05,
     diffSpeedScaleFactor: 0.01,
     rotateSpeedScaleFactor: 0.01,
