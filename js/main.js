@@ -24,7 +24,8 @@ let frameDelta = 0;
 // Get level from localStorage if present
 let currentLevel = localStorage.getItem('level') || 1;
 const levelSelect = document.getElementById('level-select-value');
-levelSelect.innerHTML = currentLevel;
+const levelSelect2 = document.getElementById('level-select-value-2');
+levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
 
 const initWorldArray = [
     initWorld1, initWorld2, initWorld3, initWorld4, initWorld5
@@ -100,6 +101,8 @@ function initThreeJS() {
     window.addEventListener('keyup', keyUp);
     document.getElementById('incLevelButton').addEventListener('click', incrementLevel);
     document.getElementById('decLevelButton').addEventListener('click', decrementLevel);
+    document.getElementById('incLevelButton2').addEventListener('click', incrementLevel);
+    document.getElementById('decLevelButton2').addEventListener('click', decrementLevel);
 }
 
 function hideLoadingScreen() {
@@ -281,7 +284,8 @@ function incrementLevel() {
     if (currentLevel < levelCount) {
         currentLevel++;
         const levelSelect = document.getElementById('level-select-value');
-        levelSelect.innerHTML = currentLevel;
+        const levelSelect2 = document.getElementById('level-select-value-2');
+        levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
         storeLevel();
     }
     initWorld();
@@ -290,7 +294,8 @@ function decrementLevel() {
     if (currentLevel - 1 > 0) {
         currentLevel--;
         const levelSelect = document.getElementById('level-select-value');
-        levelSelect.innerHTML = currentLevel;
+        const levelSelect2 = document.getElementById('level-select-value-2');
+        levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
         storeLevel();
     }
     initWorld();
