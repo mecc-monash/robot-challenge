@@ -1,8 +1,8 @@
 import * as THREE from 'https://unpkg.com/three@0.119.1/build/three.module.js';
 
 let BOARD_SIZE = {
-    width: 30,
-    divisions: 6,
+    width: 40,
+    divisions: 8,
 };
 
 // The board is contains the grid that makes up the ground and the roads.
@@ -109,7 +109,7 @@ export default class Board {
             // Raycasting in the upward direction seems to pick out the road lines. 
             // Most likely the road lines are slightly above the colour sensor.
             const upwards = new THREE.Vector3(0, 1, 0);
-            this.raycaster.set(pos, upwards);
+            this.raycaster.set(pos, upwards, 0, 0.1);
             const roadChildren = road.road?.children[0].children;
             if (roadChildren) {
                 const intersects = this.raycaster.intersectObjects(roadChildren);

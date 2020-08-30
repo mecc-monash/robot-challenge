@@ -114,7 +114,7 @@ function initWorld() {
     initWorldArray[currentLevel - 1]();
 }
 
-function initWorld1() {
+function initWorld1() { // straight road 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
@@ -134,14 +134,14 @@ function initWorld1() {
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
-function initWorld2() {
+function initWorld2() { // racetrack 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    const roadPos = new THREE.Vector3(12, 0, 12.5);
-    road = new Road(scene, roadPos, loadingManager);
+    const roadPos = new THREE.Vector3(30, 0, 12.5);
+    road = new Road(scene, roadPos, loadingManager, true);
     board = new Board(scene);
-    board.setGoal(5, 5);
+    // board.setGoal(5, 5); // no goal on this level
     board.addRoad(road);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
