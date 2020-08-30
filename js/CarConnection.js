@@ -5,10 +5,10 @@ class CarConnection {
     }
     
     setSpeedA(newSpeed) {
-        this.car.diffSpeed.a = newSpeed;
+        this.car.diffSpeed.a = newSpeed + Math.floor(Math.random() * 31);
     }
     setSpeedB(newSpeed) {
-        this.car.diffSpeed.b = newSpeed;
+        this.car.diffSpeed.b = newSpeed + Math.floor(Math.random() * 31);;
     }
 }
 
