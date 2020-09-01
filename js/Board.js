@@ -1,26 +1,24 @@
 import * as THREE from 'https://unpkg.com/three@0.119.1/build/three.module.js';
 
-let BOARD_SIZE = {
-    width: 40,
-    divisions: 8,
-};
-
 // The board is contains the grid that makes up the ground and the roads.
 // It is responsible for calculating colour values to read by the colour sensor.
 export default class Board {
-    constructor(scene) {
+    constructor(scene,width, divisions) {
         this.roads = [];
         this.obstacles = [];
         this.raycaster = new THREE.Raycaster();
         this.goalReached = false;
         this.scene = scene;
+        this.width = width;
+        this.divisions = divisions;
+        this.wall_Thickness = 0.5;
         // Grey board
         let floorCover = new THREE.MeshBasicMaterial({ color: 0x999999 });
         let meshFloor = new THREE.Mesh(
-            new THREE.PlaneGeometry(BOARD_SIZE.width, BOARD_SIZE.width, 10, 10),
+            new THREE.PlaneGeometry(this.width, this.width, 10, 10),
             floorCover
         );
-        meshFloor.position.set(BOARD_SIZE.width / 2, 0, BOARD_SIZE.width / 2);
+        meshFloor.position.set(this .width / 2, 0, this .width / 2);
         meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
         meshFloor.receiveShadow = true;
         meshFloor.matrixAutoUpdate = false; // Disable auto-updating, as we know the state will not change
@@ -28,14 +26,14 @@ export default class Board {
         scene.add(meshFloor);
 
         // Grid
-        let grid = new THREE.GridHelper(BOARD_SIZE.width, BOARD_SIZE.divisions, 0x333333, 0x333333);
+        let grid = new THREE.GridHelper(this .width, this .divisions, 0x333333, 0x333333);
         grid.material.opacity = 0.9;
         grid.material.transparent = true;
-        grid.position.set(BOARD_SIZE.width / 2, 0.01, BOARD_SIZE.width / 2);
+        grid.position.set(this .width / 2, 0.01, this .width / 2);
         scene.add(grid);
 
         // Goal tile
-        const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
+        const tileWidth = this .width / this .divisions;
         var geometry = new THREE.PlaneGeometry(tileWidth, tileWidth, 32);
         var material = new THREE.MeshBasicMaterial({ color: 0xff3019, side: THREE.DoubleSide });
         var plane = new THREE.Mesh(geometry, material);
@@ -63,7 +61,7 @@ export default class Board {
 
     setGoal(x, y) {
         this.goal = { x: x, y: y };
-        const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
+        const tileWidth = this .width / this .divisions;
         this.plane.position.set((x + 0.5) * tileWidth, 0.01, (y + 0.5) * tileWidth);
         this.plane.visible = true;
     }
@@ -81,7 +79,7 @@ export default class Board {
     overlapsGoal(corners) {
         // checks the array of 3D points for overlap with the goal tile
         return corners.every(point => {
-            const tileWidth = BOARD_SIZE.width / BOARD_SIZE.divisions;
+            const tileWidth = this .width / this .divisions;
             const leftBound = this.plane.position.x - tileWidth / 2;
             const rightBound = leftBound + tileWidth;
             const topBound = this.plane.position.z - tileWidth / 2;
@@ -122,5 +120,12 @@ export default class Board {
         });
 
         return rgb;
+    }
+
+    addWalls(){
+        this.addObstacle(0, this.width/2, this.wall_Thickness, this.width);
+        this.addObstacle(this.width, this.width/2, this.wall_Thickness, this.width);
+        this.addObstacle(this.width/2, 0, this.width, this.wall_Thickness);
+        this.addObstacle(this.width/2, this.width, this.width, this.wall_Thickness);
     }
 }
