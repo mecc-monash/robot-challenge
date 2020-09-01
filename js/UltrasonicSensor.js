@@ -7,7 +7,7 @@ class UltrasonicSensor extends THREE.Object3D {
         super();
         car.add(this);
         this.position.copy(car.position);
-        this.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 'green' })));
+        // this.add(new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshLambertMaterial({ color: 'green' })));
         this.car = car;
         this.board = board;
         this.scene = scene;
