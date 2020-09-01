@@ -56,21 +56,21 @@ export default class Car extends THREE.Object3D {
     }
 
     update(keyboard, delta) {
-        // RHS Keyboard movement inputs
+        // arrow-key / RHS keyboard movement inputs
         // Accelerate
-        if (keyboard[75]) { // K key
+        if (keyboard[40] || keyboard[75]) { // down arrow / K key
             this.speed -= carProperties.accelRate * delta;
         }
         // Decelerate
-        if (keyboard[73]) { // I key
+        if (keyboard[38] || keyboard[73]) { // up arrow / I key
             this.speed += carProperties.accelRate * delta;
         }
         // Turn anticlockwise
-        if (keyboard[74]) { // J key
+        if (keyboard[37] || keyboard[74]) { // left arrow / J key
             this.rotation.y += carProperties.turnSpeed * delta;
         }
         // Turn clockwise
-        if (keyboard[76]) { // L key
+        if (keyboard[39] || keyboard[76]) { // right arrow / L key
             this.rotation.y -= carProperties.turnSpeed * delta;
         }
 
