@@ -140,7 +140,7 @@ function initWorld2() { // racetrack
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(30, 0, 12.5);
     road = new Road(scene, roadPos, loadingManager, true);
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 40, 8);
     // board.setGoal(5, 5); // no goal on this level
     board.addRoad(road);
     lights = new Lights(scene);
