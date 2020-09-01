@@ -266,13 +266,16 @@ function keyDown(event) {
         keyboard[event.keyCode] = true;
     }
     if (event.keyCode === 82) { // r key pressed 
-        //if (!paused) {
         resetWorld();
-        //}
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
         document.getElementById('pause-menu').style.display = (paused && !gameOver) ? 'flex' : 'none';
+    }
+    else if (event.keyCode === 37) { // left arrow key pressed
+        if (gameOver || paused) decrementLevel();
+    } else if (event.keyCode === 39) { // right arrow key pressed
+        if (gameOver || paused) incrementLevel();
     }
 }
 
