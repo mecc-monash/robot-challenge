@@ -71,6 +71,7 @@ function initThreeJS() {
     let controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = 0.95 * Math.PI / 2;
     controls.enableZoom = true;
+    controls.enableKeys = false;
     controls.target = new THREE.Vector3(15, 0, 15);
     controls.update();
 
