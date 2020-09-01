@@ -274,9 +274,7 @@ function keyDown(event) {
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
-        document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
-        // Show lose menu only if gameOver and not paused
-        document.getElementById('lose-menu').style.display = (gameOver && !paused) ? 'flex' : 'none';
+        document.getElementById('pause-menu').style.display = (paused && !gameOver) ? 'flex' : 'none';
     }
 }
 
