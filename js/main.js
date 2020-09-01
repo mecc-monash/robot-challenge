@@ -114,7 +114,25 @@ function initWorld() {
     initWorldArray[currentLevel - 1]();
 }
 
-function initWorld1() { // straight road 
+function initWorld1() { // goal square level
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x232323);
+    // scene.add(new THREE.AxesHelper(10));
+    board = new Board(scene, 30, 6);
+    board.setGoal(4, 4);
+    board.addRoad(road);
+    lights = new Lights(scene);
+    car = new Car(scene, loadingManager);
+    carConn = new CarConnection(car);
+    micro = new Micro(carConn);
+    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontLeft, board);
+    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
+    micro.addColourSensor(colourSensor);
+    micro.addUltrasonicSensor(ultrasonicSensor);
+    micro.setup();
+}
+function initWorld2() { // straight road level 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
@@ -134,7 +152,7 @@ function initWorld1() { // straight road
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
-function initWorld2() { // racetrack 
+function initWorld3() { // racetrack level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
@@ -151,26 +169,6 @@ function initWorld2() { // racetrack
     colourSensor = new ColourSensor(car, frontLeft, board);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
-    micro.addUltrasonicSensor(ultrasonicSensor);
-    micro.setup();
-}
-function initWorld3() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x232323);
-    // scene.add(new THREE.AxesHelper(10));
-    const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 30, 6);
-    board.setGoal(4, 4);
-    board.addRoad(road);
-    lights = new Lights(scene);
-    car = new Car(scene, loadingManager);
-    carConn = new CarConnection(car);
-    micro = new Micro(carConn);
-    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontLeft, board);
-    micro.addColourSensor(colourSensor);
-    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
@@ -200,8 +198,7 @@ function initWorld4() {
     micro.setup();
 }
 
-// maze level
-function initWorld5() {
+function initWorld5() { // maze level
     var wall_thickness = 0.5
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
