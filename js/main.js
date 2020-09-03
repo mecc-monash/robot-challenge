@@ -72,6 +72,7 @@ function initThreeJS() {
     let controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = 0.95 * Math.PI / 2;
     controls.enableZoom = true;
+    controls.enableKeys = false;
     controls.target = new THREE.Vector3(15, 0, 15);
     controls.update();
 
@@ -115,7 +116,25 @@ function initWorld() {
     initWorldArray[currentLevel - 1]();
 }
 
-function initWorld1() { // straight road 
+function initWorld1() { // goal square level
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x232323);
+    // scene.add(new THREE.AxesHelper(10));
+    board = new Board(scene, 30, 6);
+    board.setGoal(4, 4);
+    board.addRoad(road);
+    lights = new Lights(scene);
+    car = new Car(scene, loadingManager);
+    carConn = new CarConnection(car);
+    micro = new Micro(carConn);
+    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontLeft, board);
+    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
+    micro.addColourSensor(colourSensor);
+    micro.addUltrasonicSensor(ultrasonicSensor);
+    micro.setup();
+}
+function initWorld2() { // straight road level 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
@@ -135,13 +154,13 @@ function initWorld1() { // straight road
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
-function initWorld2() { // racetrack 
+function initWorld3() { // racetrack level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(30, 0, 12.5);
     road = new Road(scene, roadPos, loadingManager, true);
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 40, 8);
     // board.setGoal(5, 5); // no goal on this level
     board.addRoad(road);
     lights = new Lights(scene);
@@ -152,26 +171,6 @@ function initWorld2() { // racetrack
     colourSensor = new ColourSensor(car, frontLeft, board);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
-    micro.addUltrasonicSensor(ultrasonicSensor);
-    micro.setup();
-}
-function initWorld3() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x232323);
-    // scene.add(new THREE.AxesHelper(10));
-    const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 30, 6);
-    board.setGoal(4, 4);
-    board.addRoad(road);
-    lights = new Lights(scene);
-    car = new Car(scene, loadingManager);
-    carConn = new CarConnection(car);
-    micro = new Micro(carConn);
-    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontLeft, board);
-    micro.addColourSensor(colourSensor);
-    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
@@ -201,8 +200,7 @@ function initWorld4() {
     micro.setup();
 }
 
-// maze level
-function initWorld5() {
+function initWorld5() { // maze level
     var wall_thickness = 0.5
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
@@ -274,15 +272,16 @@ function keyDown(event) {
         keyboard[event.keyCode] = true;
     }
     if (event.keyCode === 82) { // r key pressed 
-        //if (!paused) {
         resetWorld();
-        //}
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
-        document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
-        // Show lose menu only if gameOver and not paused
-        document.getElementById('lose-menu').style.display = (gameOver && !paused) ? 'flex' : 'none';
+        document.getElementById('pause-menu').style.display = (paused && !gameOver) ? 'flex' : 'none';
+    }
+    else if (event.keyCode === 37) { // left arrow key pressed
+        if (gameOver || paused) decrementLevel();
+    } else if (event.keyCode === 39) { // right arrow key pressed
+        if (gameOver || paused) incrementLevel();
     }
 }
 

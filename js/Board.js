@@ -112,7 +112,7 @@ export default class Board {
             // Most likely the road lines are slightly above the colour sensor.
             const upwards = new THREE.Vector3(0, 1, 0);
             this.raycaster.set(pos, upwards, 0, 0.1);
-            const roadChildren = road.road?.children[0].children;
+            const roadChildren = road?.road?.children[0].children;
             if (roadChildren) {
                 const intersects = this.raycaster.intersectObjects(roadChildren);
                 if (intersects.length > 0) {
