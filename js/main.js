@@ -8,10 +8,11 @@ import CarConnection from './CarConnection.js';
 import ColourSensor from './ColourSensor.js';
 import UltrasonicSensor from './UltrasonicSensor.js';
 import Road from './Road.js';
+import Maze from './Maze.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
-let micro, carConn, colourSensor, ultrasonicSensor, road;
+let micro, carConn, colourSensor, ultrasonicSensor, road, maze;
 let loadingManager;
 let paused = false;
 let gameOver = false;
@@ -209,12 +210,13 @@ function initWorld5() {
     const roadPos = new THREE.Vector3(18, 0, 22.5);
     //road = new Road(scene, roadPos);
     board = new Board(scene,100,10);
-    //board.setGoal(4, 4);
+    board.setGoal(6, 5);
     //board.addRoad(road);
 
-    board.addWalls();
+    //board.addWalls();
     
     // MAZE
+    /*
     board.addObstacle(5, 15, 10, wall_thickness);
     board.addObstacle(10, 25, wall_thickness, 20);
     board.addObstacle(10, 55, wall_thickness, 10);
@@ -232,7 +234,11 @@ function initWorld5() {
     board.addObstacle(90, 45, 20, wall_thickness);
     board.addObstacle(85, 15, 30, wall_thickness);
     board.addObstacle(85, 30, wall_thickness,5);
+    */
+    const mazePos = new THREE.Vector3(50, 0, 50);
 
+    maze = new Maze(scene, mazePos, loadingManager);
+    board.addModel(maze);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
