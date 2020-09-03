@@ -59,6 +59,10 @@ export default class Board {
         this.obstacles[this.obstacles.length-1].position.z = yPos;
     }
 
+    addModel(model){
+        this.obstacles = model.children;
+    }
+
     setGoal(x, y) {
         this.goal = { x: x, y: y };
         const tileWidth = this .width / this .divisions;
