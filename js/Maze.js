@@ -14,7 +14,7 @@ class Maze extends THREE.Object3D {
 
         var loader = new OBJLoader(loadingManager);
 
-        var material = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: false });
+        var material = new THREE.MeshPhongMaterial({ color: 0x111111, wireframe: false });
         
         
 
@@ -31,6 +31,8 @@ class Maze extends THREE.Object3D {
                 
                 scene.add(mesh);
                 this.children[i] = mesh;
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
 
             }
         });

@@ -122,7 +122,6 @@ function initWorld1() { // goal square level
     // scene.add(new THREE.AxesHelper(10));
     board = new Board(scene, 30, 6);
     board.setGoal(4, 4);
-    board.addRoad(road);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
