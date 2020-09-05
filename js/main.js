@@ -181,12 +181,12 @@ function initWorld4() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 50, 6);
     board.setGoal(4, 4);
-    board.addRoad(road);
-    board.addObstacle(27.5, 15, 3, 30);
-    board.addObstacle(17.5, 12.5, 3, 10);
+    board.addWalls();
+
+    board.addObstacle(12.5,15,25,0)
+    board.addObstacle(30,30,40,0)
 
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
@@ -211,28 +211,7 @@ function initWorld5() {
     board = new Board(scene,100,10);
     //board.setGoal(4, 4);
     //board.addRoad(road);
-
     board.addWalls();
-    
-    // MAZE
-    board.addObstacle(5, 15, 10, wall_thickness);
-    board.addObstacle(10, 25, wall_thickness, 20);
-    board.addObstacle(10, 55, wall_thickness, 10);
-    board.addObstacle(22.5, 50, 25, wall_thickness);
-    board.addObstacle(10, 80, 20, wall_thickness);
-    board.addObstacle(20, 75, wall_thickness, 20);
-    board.addObstacle(30, 90, wall_thickness, 20);
-    board.addObstacle(25, 10, 15, wall_thickness);
-    board.addObstacle(25, 20, wall_thickness, 20);
-    board.addObstacle(35, 45, wall_thickness, 20);
-    board.addObstacle(52, 85, 16, wall_thickness);
-    board.addObstacle(70, 80, 20, wall_thickness);
-    board.addObstacle(60, 82.5,wall_thickness, 5);
-    board.addObstacle(80, 90, wall_thickness,20);
-    board.addObstacle(90, 45, 20, wall_thickness);
-    board.addObstacle(85, 15, 30, wall_thickness);
-    board.addObstacle(85, 30, wall_thickness,5);
-
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
     carConn = new CarConnection(car);
