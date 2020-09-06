@@ -163,6 +163,9 @@ function initWorld3() { // racetrack level
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board);
+    micro.addColourSensor(colourSensor);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
     micro.addUltrasonicSensor(ultrasonicSensor);
