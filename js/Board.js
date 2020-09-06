@@ -50,7 +50,7 @@ export default class Board {
 
     addObstacle(xPos, yPos, xSize, ySize) {
         var geometry = new THREE.BoxGeometry(xSize, 1.5, ySize);
-        var material = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: false });
+        var material = new THREE.MeshPhongMaterial({ color: 0x111111, wireframe: false });
         var cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
         this.obstacles.push(cube);
