@@ -19,10 +19,6 @@ class Maze extends THREE.Object3D {
         
 
         loader.load(modelPath, (object) => {
-
-
-            console.log(object.children.length);
-
             for (let i = 0; i < object.children.length; i++) {
                         
                 var mesh = new THREE.Mesh(object.children[i].geometry, material);
@@ -36,8 +32,17 @@ class Maze extends THREE.Object3D {
 
             }
         });
+    }
 
-        
+    startCollision() {
+        this.children.forEach(mesh => {
+           mesh.material.color.setHex(0x8c0000);
+        });
+    }
+    endCollision() {
+        this.children.forEach(mesh => {
+           mesh.material.color.setHex(0x111111);
+        });
     }
 }
 

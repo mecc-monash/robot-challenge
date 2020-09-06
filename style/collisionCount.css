@@ -1,0 +1,7 @@
+.collision-count-overlay {
+	position: absolute;
+	z-index: 100;
+	display: none;
+    padding: 1rem;
+    color: white;
+}

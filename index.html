@@ -13,7 +13,9 @@
             display: block;
         }
     </style>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/menu.css">
+    <link rel="stylesheet" href="style/loader.css">
+    <link rel="stylesheet" href="style/collisionCount.css">
 </head>
 
 <body>
@@ -41,33 +43,14 @@
             </div>
         </div>
     </div>
-    <div id="lose-menu" class="menu-overlay">
-        <div id="lose-menu" class="menu-box">
-            <div class="menu-title-bar">
-                You lose
-            </div>
-            <div class="menu-option-container">
-                <div class="menu-option-label">
-                    Level:
-                </div>
-                <div id="menu-option-choice">
-                    <button id="decLevelButton2"><</button>
-                    <span id="level-select-value-2">1</span>
-                    <button id="incLevelButton2">></button>
-                </div>
-            </div>
-            <div class="menu-option-container">
-                <div class="menu-option-label">
-                    r to restart
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="loading-screen">
         <div>
             <div>Loading...</div>
             <div class="loader"></div>
         </div>
+    </div>
+    <div id="collision-count" class="collision-count-overlay">
+        Collisions: 0
     </div>
 </body>
 

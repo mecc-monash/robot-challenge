@@ -14,19 +14,19 @@ let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
 let micro, carConn, colourSensor, ultrasonicSensor, road, maze;
 let loadingManager;
-let paused = false;
-let gameOver = false;
+let paused = true;
+let colliding = false;
+let collisionCount = 0;
 let SCREEN_WIDTH = window.innerWidth;
 let SCREEN_HEIGHT = window.innerHeight;
+let firstLoad = true;
 
 const INV_MAX_FPS = 1 / 60;
-let frameDelta = 0;
 
 // Get level from localStorage if present
 let currentLevel = localStorage.getItem('level') || 1;
 const levelSelect = document.getElementById('level-select-value');
-const levelSelect2 = document.getElementById('level-select-value-2');
-levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
+levelSelect.innerHTML = currentLevel;
 
 const initWorldArray = [
     initWorld1, initWorld2, initWorld3, initWorld4, initWorld5
@@ -98,16 +98,20 @@ function initThreeJS() {
     window.addEventListener('keyup', keyUp);
     document.getElementById('incLevelButton').addEventListener('click', incrementLevel);
     document.getElementById('decLevelButton').addEventListener('click', decrementLevel);
-    document.getElementById('incLevelButton2').addEventListener('click', incrementLevel);
-    document.getElementById('decLevelButton2').addEventListener('click', decrementLevel);
 }
 
 function hideLoadingScreen() {
-    console.log("finished loading")
     document.getElementById('loading-screen').style.display = 'none';
+
+    if (firstLoad) {
+        firstLoad = false;
+        paused = false;
+    }
+    resetWorld();
 }
 
 function initWorld() {
+    document.getElementById('collision-count').style.display = 'none'; // collision count is hidden on most levels
     initWorldArray[currentLevel - 1]();
 }
 
@@ -195,6 +199,10 @@ function initWorld4() {
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
+
+    document.getElementById('collision-count').style.display = 'block';
+    collisionCount = 0;
+    updateCollisionCount();
 }
 
 function initWorld5() { // maze level
@@ -222,10 +230,14 @@ function initWorld5() { // maze level
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
+
+    document.getElementById('collision-count').style.display = 'block';
+    collisionCount = 0;
+    updateCollisionCount();
 }
 
 function update(delta) {
-    if (paused || gameOver) {
+    if (paused) {
         return;
     }
     car.update(keyboard, delta);
@@ -236,10 +248,29 @@ function update(delta) {
         micro.ultrasonicSensors[0]?.detectBackwards() <= 1 ||
         micro.ultrasonicSensors[0]?.detectLeft() <= 0.5 ||
         micro.ultrasonicSensors[0]?.detectRight() <= 0.5) {
-        gameOver = true;
-        document.getElementById('lose-menu').style.display = 'flex';
-    }
 
+        if (!colliding) {
+            startCollision();
+        }
+        colliding = true;
+    } else {
+        if (colliding) {
+            endCollision();
+        }
+        colliding = false;
+    }
+}
+
+function startCollision() {
+    collisionCount++;
+    maze.startCollision();
+    updateCollisionCount();
+}
+function endCollision() {
+    maze.endCollision();
+}
+function updateCollisionCount() {
+    document.getElementById('collision-count').innerHTML = 'Collisions: ' + collisionCount;
 }
 
 function keyDown(event) {
@@ -247,26 +278,27 @@ function keyDown(event) {
         keyboard[event.keyCode] = true;
     }
     if (event.keyCode === 82) { // r key pressed 
+        paused = false;
         resetWorld();
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
-        document.getElementById('pause-menu').style.display = (paused && !gameOver) ? 'flex' : 'none';
+        document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
     }
     else if (event.keyCode === 37) { // left arrow key pressed
-        if (gameOver || paused) decrementLevel();
+        if (paused) decrementLevel();
     } else if (event.keyCode === 39) { // right arrow key pressed
-        if (gameOver || paused) incrementLevel();
+        if (paused) incrementLevel();
     }
 }
 
 function resetWorld() {
     car.reset();
     micro.reset();
-    paused = false;
-    gameOver = false;
     document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
-    document.getElementById('lose-menu').style.display = 'none';
+
+    collisionCount = 0;
+    updateCollisionCount();
 }
 
 function keyUp(event) {
@@ -286,8 +318,7 @@ function incrementLevel() {
     if (currentLevel < levelCount) {
         currentLevel++;
         const levelSelect = document.getElementById('level-select-value');
-        const levelSelect2 = document.getElementById('level-select-value-2');
-        levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
+        levelSelect.innerHTML = currentLevel;
         storeLevel();
     }
     initWorld();
@@ -296,8 +327,7 @@ function decrementLevel() {
     if (currentLevel - 1 > 0) {
         currentLevel--;
         const levelSelect = document.getElementById('level-select-value');
-        const levelSelect2 = document.getElementById('level-select-value-2');
-        levelSelect.innerHTML = levelSelect2.innerHTML = currentLevel;
+        levelSelect.innerHTML = currentLevel;
         storeLevel();
     }
     initWorld();
