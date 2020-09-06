@@ -42,12 +42,7 @@ function init() {
 }
 
 function animate() {
-    frameDelta += clock.getDelta();
-    while (frameDelta >= INV_MAX_FPS) {
-        update(INV_MAX_FPS);
-        frameDelta -= INV_MAX_FPS;
-    }
-
+    update(INV_MAX_FPS);
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
