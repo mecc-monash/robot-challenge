@@ -136,13 +136,14 @@ function initWorld2() { // straight road level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    const roadPos = new THREE.Vector3(9, 0, 22.5);
+    const roadPos = new THREE.Vector3(14, 0, 17.5);
     road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 30, 6);
-    board.setGoal(4, 4);
+    board = new Board(scene, 35, 7);
+    board.setGoal(5, 3);
     board.addRoad(road);
     lights = new Lights(scene);
-    car = new Car(scene, loadingManager);
+    const carPos = new THREE.Vector3(7.5, 0, 15);
+    car = new Car(scene, loadingManager, carPos);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
