@@ -9,15 +9,11 @@ class Maze extends THREE.Object3D {
         const modelPath = 'models/maze/Maze.obj';
 
         this.initialPos = position;
-
         this.maze = new THREE.Group();
 
         var loader = new OBJLoader(loadingManager);
-
         var material = new THREE.MeshPhongMaterial({ color: 0x111111, wireframe: false });
         
-        
-
         loader.load(modelPath, (object) => {
             for (let i = 0; i < object.children.length; i++) {
                         
@@ -29,19 +25,7 @@ class Maze extends THREE.Object3D {
                 this.children[i] = mesh;
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
-
             }
-        });
-    }
-
-    startCollision() {
-        this.children.forEach(mesh => {
-           mesh.material.color.setHex(0x8c0000);
-        });
-    }
-    endCollision() {
-        this.children.forEach(mesh => {
-           mesh.material.color.setHex(0x111111);
         });
     }
 }

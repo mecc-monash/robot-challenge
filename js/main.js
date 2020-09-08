@@ -268,11 +268,11 @@ function update(delta) {
 
 function startCollision() {
     collisionCount++;
-    maze.startCollision();
+    board.startCollision();
     updateCollisionCount();
 }
 function endCollision() {
-    maze.endCollision();
+    board.endCollision();
 }
 function updateCollisionCount() {
     document.getElementById('collision-count').innerHTML = 'Collisions: ' + collisionCount;

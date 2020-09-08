@@ -59,6 +59,17 @@ export default class Board {
         this.obstacles[this.obstacles.length-1].position.z = yPos;
     }
 
+    startCollision() {
+        this.obstacles.forEach(mesh => {
+           mesh.material.color.setHex(0x8c0000);
+        });
+    }
+    endCollision() {
+        this.obstacles.forEach(mesh => {
+           mesh.material.color.setHex(0x111111);
+        });
+    }
+
     addModel(model){
         this.obstacles = model.children;
     }
