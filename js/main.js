@@ -149,8 +149,11 @@ function initWorld2() { // straight road level
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board);
-    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board);
+    micro.addColourSensor(colourSensor);
+    ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
     micro.setup();
 }
