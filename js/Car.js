@@ -11,7 +11,7 @@ let carProperties = {
 };
 
 export default class Car extends THREE.Object3D {
-    constructor(scene, loadingManager, initialPos = new THREE.Vector3(7.5, 0, 7.5)) {
+    constructor(scene, loadingManager, initialPos = new THREE.Vector3(7.5, 0, 7.5), carRotation = new THREE.Euler(0, 0, 0)) {
         super();
 
         scene.add(this);
@@ -23,8 +23,8 @@ export default class Car extends THREE.Object3D {
 
         this.speed = 0;
         this.diffSpeed = { a: 0, b: 0 };
-        // this.initialPos = new THREE.Vector3(7.5, 0, 7.5);
         this.initialPos = initialPos;
+        this.initialRotation = carRotation;
 
         // Load car model and materials
         this.carObj = new THREE.Group();
@@ -52,6 +52,10 @@ export default class Car extends THREE.Object3D {
                 scene.add(this);
                 this.add(this.carObj);
                 this.position.copy(this.initialPos);
+
+                if (carRotation) {
+                    this.setRotationFromEuler(this.initialRotation);
+                }
             });
         });
     }
@@ -110,7 +114,7 @@ export default class Car extends THREE.Object3D {
         // Reset position and velocity
         this.position.copy(this.initialPos);
         this.diffSpeed = { a: 0, b: 0 };
-        this.rotation.set(0, 0, 0);
+        this.setRotationFromEuler(this.initialRotation);
         this.updateMatrixWorld();
     }
 }

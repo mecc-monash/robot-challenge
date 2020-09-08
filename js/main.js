@@ -143,7 +143,8 @@ function initWorld2() { // straight road level
     board.addRoad(road);
     lights = new Lights(scene);
     const carPos = new THREE.Vector3(7.5, 0, 15);
-    car = new Car(scene, loadingManager, carPos);
+    const carRotation = new THREE.Euler(0, Math.PI/4, 0);
+    car = new Car(scene, loadingManager, carPos, carRotation);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
