@@ -1,7 +1,13 @@
+# Robot Challenge
+A simulation to facilitate teaching the basics of robotics and microcontrollers. Topics covered include colour sensors, ultrasonic sensors, line-following and maze-solving.
+
+![Screenshots](docs/screenshots.png)
+
 # Setup
 These setup instructions should work on Windows 10, macOS and many Linux distributions.
 - Install [VSCode](https://code.visualstudio.com/download)
 - Download the files from this repository and unzip:  
+
 ![Download visualisation](docs/download_from_github.png)
 - Open the robot-challenge folder in VSCode (File -> Open Folder)
 - Open the Extensions tab (Ctrl-Shift-X or Cmd-Shift-X) and install the Live Server extension
