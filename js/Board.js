@@ -50,13 +50,17 @@ export default class Board {
 
     addObstacle(xPos, yPos, xSize, ySize) {
         var geometry = new THREE.BoxGeometry(xSize, 1.5, ySize);
-        var material = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: false });
+        var material = new THREE.MeshPhongMaterial({ color: 0x111111, wireframe: false });
         var cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
         this.obstacles.push(cube);
         this.obstacles[this.obstacles.length-1].position.x = xPos;
         this.obstacles[this.obstacles.length-1].position.y = 0.75;
         this.obstacles[this.obstacles.length-1].position.z = yPos;
+    }
+
+    addModel(model){
+        this.obstacles = model.children;
     }
 
     setGoal(x, y) {
@@ -108,7 +112,7 @@ export default class Board {
             // Most likely the road lines are slightly above the colour sensor.
             const upwards = new THREE.Vector3(0, 1, 0);
             this.raycaster.set(pos, upwards, 0, 0.1);
-            const roadChildren = road.road?.children[0].children;
+            const roadChildren = road?.road?.children[0].children;
             if (roadChildren) {
                 const intersects = this.raycaster.intersectObjects(roadChildren);
                 if (intersects.length > 0) {
