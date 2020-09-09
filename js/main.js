@@ -167,7 +167,8 @@ function initWorld3() { // racetrack level
     // board.setGoal(5, 5); // no goal on this level
     board.addRoad(road);
     lights = new Lights(scene);
-    car = new Car(scene, loadingManager);
+    const carPosition = new THREE.Vector3(10, 0, 7.5);
+    car = new Car(scene, loadingManager, carPosition);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
