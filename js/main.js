@@ -127,6 +127,9 @@ function initWorld1() { // goal square level
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board);
+    micro.addColourSensor(colourSensor);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
     micro.addUltrasonicSensor(ultrasonicSensor);
@@ -148,10 +151,10 @@ function initWorld2() { // straight road level
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontLeft, board);
+    colourSensor = new ColourSensor(car, frontLeft, board, true);
     micro.addColourSensor(colourSensor);
     const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontRight, board);
+    colourSensor = new ColourSensor(car, frontRight, board, true);
     micro.addColourSensor(colourSensor);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
@@ -171,11 +174,11 @@ function initWorld3() { // racetrack level
     car = new Car(scene, loadingManager, carPosition);
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
-    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontLeft, board);
+    const frontLeft = new THREE.Vector3(0.30 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontLeft, board, true);
     micro.addColourSensor(colourSensor);
-    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
-    colourSensor = new ColourSensor(car, frontRight, board);
+    const frontRight = new THREE.Vector3(-0.30 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board, true);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addColourSensor(colourSensor);
     micro.addUltrasonicSensor(ultrasonicSensor);
@@ -201,6 +204,8 @@ function initWorld4() {
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board);
     micro.addColourSensor(colourSensor);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
@@ -232,6 +237,8 @@ function initWorld5() { // maze level
     micro = new Micro(carConn);
     const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
+    colourSensor = new ColourSensor(car, frontRight, board);
     micro.addColourSensor(colourSensor);
     ultrasonicSensor = new UltrasonicSensor(car, board, scene);
     micro.addUltrasonicSensor(ultrasonicSensor);
