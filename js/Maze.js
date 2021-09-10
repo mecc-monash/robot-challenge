@@ -20,7 +20,8 @@ class Maze extends THREE.Object3D {
                 var mesh = new THREE.Mesh(object.children[i].geometry, material);
                 mesh.scale.set(0.1, 0.1, 0.1);
                 mesh.position.copy(this.initialPos);
-                
+                var rotOffset = -Math.PI/2
+                mesh.rotation.set(rotOffset,0,0);
                 scene.add(mesh);
                 this.children[i] = mesh;
                 mesh.castShadow = true;

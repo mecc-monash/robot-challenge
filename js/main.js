@@ -235,15 +235,15 @@ function initWorld4() {
 }
 
 function initWorld5() { // maze level
-    var wall_thickness = 0.5
+    // var wall_thickness = 0.5
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
     board = new Board(scene,100,10);
-    board.setGoal(6, 5);
+    board.setGoal(1, 5);
 
-    const mazePos = new THREE.Vector3(50, 0, 50);
+    const mazePos = new THREE.Vector3(0, -3, 0);
     maze = new Maze(scene, mazePos, loadingManager);
     board.addModel(maze);
 
