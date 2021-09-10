@@ -359,7 +359,19 @@ function onDocumentMouseMove(event) {
 function onMouseDown(evt) {
     evt.preventDefault();
 
+    var isRightMB;
+
+    if ("which" in evt)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+        isRightMB = evt.which == 3; 
+    else if ("button" in evt)  // IE, Opera 
+        isRightMB = evt.button == 2;
+
+
     mouseDown = true;
+
+    if (isRightMB)
+        thirdPersonCam = false;
+
 }
 
 function onMouseUp(evt) {
