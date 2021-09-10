@@ -9,6 +9,7 @@ import ColourSensor from './ColourSensor.js';
 import UltrasonicSensor from './UltrasonicSensor.js';
 import Road from './Road.js';
 import Maze from './Maze.js';
+import Stopwatch from './Stopwatch.js';
 
 let scene, camera, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
@@ -52,7 +53,7 @@ function initThreeJS() {
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
 
-    clock = new THREE.Clock();
+    clock = new Stopwatch("time");
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -106,13 +107,20 @@ function hideLoadingScreen() {
     if (firstLoad) {
         firstLoad = false;
         paused = false;
+
+        resetWorld();
+        clock.start(); // makes sure the clock starts when the page first loads
+    } else {
+        resetWorld();
     }
-    resetWorld();
 }
 
 function initWorld() {
     document.getElementById('collision-count').style.display = 'none'; // collision count is hidden on most levels
     initWorldArray[currentLevel - 1]();
+    if (!paused) {
+        clock.start()
+    }
 }
 
 function initWorld1() { // goal square level
@@ -314,10 +322,16 @@ function keyDown(event) {
     if (event.keyCode === 82) { // r key pressed 
         paused = false;
         resetWorld();
+        clock.start();
     }
     else if (event.keyCode === 80) { // p key pressed
         paused = !paused;
         document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
+        if (paused) {
+            clock.stop();
+        } else {
+            clock.start();
+        }
     }
     else if (event.keyCode === 37) { // left arrow key pressed
         if (paused) decrementLevel();
@@ -333,6 +347,8 @@ function resetWorld() {
 
     collisionCount = 0;
     updateCollisionCount();
+
+    clock.reset()
 }
 
 function keyUp(event) {

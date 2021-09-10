@@ -2,6 +2,15 @@
 	position: absolute;
 	z-index: 100;
 	display: none;
-    padding: 1rem;
-    color: white;
+	padding: 1rem;
+	color: white;
+}
+
+.time-overlay {
+	position: absolute;
+	z-index: 100;
+	/* display: none; */
+    margin-top: 1.5rem;
+	padding: 1rem;
+	color: red;
 }
