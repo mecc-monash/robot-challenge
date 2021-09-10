@@ -1,41 +1,51 @@
 
-let update_time = 100;
+let update_time = 5000; // ms
+// let hrs = min = sec = mil = dt = ps = pt = tt = t = 0;
+
 class Stopwatch {
     constructor(div_id) {
-        this.stopped = false;
-        this.elapsed = 0;
-        this.div_id = div_id;
-        this.render()
+        this.display = document.getElementById(div_id);
+        this.update = this.update.bind(this)
+        this.running = false;
     }
 
     update() {
-        this.elapsed += update_time;
-        this.render()
+        if (this.running) {
+            this.t = performance.now() * 0.001;
+            this.dt += this.t - this.pt;
+            this.pt = this.t;
+            this.tt = Math.floor(this.dt);
+            let mil = this.dt - this.tt;
+            // MIL.textContent = (mil).toFixed(3).slice(-3);
+            let sec = this.tt%60;
+            // if ( sec == this.ps ) return;
+            this.ps  = sec;
+            let min = Math.floor(this.tt/60)%60;
+            let hrs = Math.floor(this.tt/3600);
+            // HRS.textContent = ('0'+hrs).slice(-2);
+            // MIN.textContent = ('0'+min).slice(-2);
+            // SEC.textContent = ('0'+sec).slice(-2);
+            let timeString = 'Time: ' + ('0'+min).slice(-2) + ':' + ('0'+sec).slice(-2) + '.' + (mil).toFixed(3).slice(-3);
+            
+            this.display.textContent = timeString;
+        }
     }
 
     start() {
-        // this.stopped = false;
-        if (!this.interval) {
-            this.interval = setInterval(this.update.bind(this), update_time);
+        if (!this.running) {
+            this.t = this.pt = performance.now() * 0.001;
         }
+        this.running = true;   
     }
 
     stop() {
-        // this.stopped = true;
-        if (this.interval) {
-            clearInterval(this.interval)
-            this.interval = null;
-        }
+        this.running = false;
     }
 
     reset() {
-        this.elapsed = 0;
-        this.render()
-    }
-
-    render() {
-        let h = ((this.elapsed / 1000) / 60) / 60
-        document.getElementById(this.div_id).innerHTML = 'Time: ' + this.elapsed/100;
+        this.dt = this.ps = 0;
+        let timeString = 'Time: 00:00:00';
+        this.display.textContent = timeString;
     }
 }
 

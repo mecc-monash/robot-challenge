@@ -48,6 +48,10 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+function goalFunction() {
+    clock.stop()
+}
+
 function initThreeJS() {
     // Camera
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
@@ -127,7 +131,7 @@ function initWorld1() { // goal square level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 30, 6, goalFunction);
     board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
@@ -153,7 +157,7 @@ function initWorld2() { // straight road level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(14, 0, 17.5);
     road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 35, 7);
+    board = new Board(scene, 35, 7, goalFunction);
     board.setGoal(5, 3);
     board.addRoad(road);
     lights = new Lights(scene);
@@ -183,7 +187,7 @@ function initWorld3() { // racetrack level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(30, 0, 12.5);
     road = new Road(scene, roadPos, loadingManager, true);
-    board = new Board(scene, 40, 8);
+    board = new Board(scene, 40, 8, goalFunction);
     board.addRoad(road);
 
     lights = new Lights(scene);
@@ -212,7 +216,7 @@ function initWorld4() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene, 50, 6);
+    board = new Board(scene, 50, 6, goalFunction);
     board.setGoal(4, 4);
     board.addWalls();
 
@@ -248,7 +252,7 @@ function initWorld5() { // maze level
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene,100,10);
+    board = new Board(scene,100,10, goalFunction);
     board.setGoal(6, 5);
 
     const mazePos = new THREE.Vector3(50, 0, 50);
@@ -285,6 +289,7 @@ function update(delta) {
     car.update(keyboard, delta);
     micro.loop();
     board.update(car.corners());
+    clock.update()
 
     if(micro.ultrasonicSensors[0]?.detectForwards() <= 1 ||
         micro.ultrasonicSensors[0]?.detectBackwards() <= 1 ||
