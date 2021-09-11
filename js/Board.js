@@ -3,11 +3,12 @@ import * as THREE from 'https://unpkg.com/three@0.119.1/build/three.module.js';
 // The board is contains the grid that makes up the ground and the roads.
 // It is responsible for calculating colour values to read by the colour sensor.
 export default class Board {
-    constructor(scene,width, divisions) {
+    constructor(scene,width, divisions, goalFunction) {
         this.roads = [];
         this.obstacles = [];
         this.raycaster = new THREE.Raycaster();
         this.goalReached = false;
+        this.goalFunction = goalFunction;
         this.scene = scene;
         this.width = width;
         this.divisions = divisions;
@@ -83,11 +84,16 @@ export default class Board {
 
     update(playerPos) {
         if (this.overlapsGoal(playerPos)) {
-            this.plane.material.color.setHex(0x0CE112);
-            this.goalReached = true;
+            if (!this.goalReached) {
+                this.plane.material.color.setHex(0x0CE112);
+                this.goalReached = true;
+                this.goalFunction()
+            }
         } else {
-            this.plane.material.color.setHex(0xff3019);
-            this.goalReached = false;
+            if (this.goalReached) {
+                this.plane.material.color.setHex(0xff3019);
+                this.goalReached = false;
+            }
         }
     }
 

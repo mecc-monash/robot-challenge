@@ -9,8 +9,9 @@ import ColourSensor from './ColourSensor.js';
 import UltrasonicSensor from './UltrasonicSensor.js';
 import Road from './Road.js';
 import Maze from './Maze.js';
+import Stopwatch from './Stopwatch.js';
 
-let scene, camera, renderer, lights, car, board, clock;
+let scene, camera, controls, mouse, mouseDown, zoom, timeout, cameraOrbit, cameraFollow, thirdPersonCam, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
 let micro, carConn, colourSensor, ultrasonicSensor, road, maze;
 let loadingManager;
@@ -47,12 +48,20 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+function goalFunction() {
+    clock.stop()
+    document.getElementById('time').style.color = 'greenyellow';
+}
+
 function initThreeJS() {
     // Camera
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
+    cameraFollow = new THREE.Object3D();
+    thirdPersonCam = false;
 
-    clock = new THREE.Clock();
+    clock = new Stopwatch("time");
+    cameraOrbit = new THREE.Vector2();
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -64,13 +73,16 @@ function initThreeJS() {
     renderer.outputEncoding = THREE.sRGBEncoding;
 
     // Controls
-    let controls = new OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = 0.95 * Math.PI / 2;
     controls.enableZoom = true;
     controls.enableKeys = false;
     controls.target = new THREE.Vector3(15, 0, 15);
-    controls.update();
-
+    controls.update(); 
+    
+    mouse = [new THREE.Vector2(), new THREE.Vector2(), new THREE.Vector2()];
+    timeout = 0;
+    zoom = 1;
     // GUI
     let Params = function () {
         this.bgColour = '#232323';
@@ -98,6 +110,10 @@ function initThreeJS() {
     window.addEventListener('keyup', keyUp);
     document.getElementById('incLevelButton').addEventListener('click', incrementLevel);
     document.getElementById('decLevelButton').addEventListener('click', decrementLevel);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mousedown', onMouseDown,false);
+    document.addEventListener('mouseup',onMouseUp, false);
+    document.addEventListener('wheel',onwheel, false);
 }
 
 function hideLoadingScreen() {
@@ -106,20 +122,28 @@ function hideLoadingScreen() {
     if (firstLoad) {
         firstLoad = false;
         paused = false;
+
+        resetWorld();
+        clock.start(); // makes sure the clock starts when the page first loads
+    } else {
+        resetWorld();
     }
-    resetWorld();
 }
 
 function initWorld() {
     document.getElementById('collision-count').style.display = 'none'; // collision count is hidden on most levels
+    document.getElementById('time').style.display = 'none'; // similar for stopwatch
     initWorldArray[currentLevel - 1]();
+    if (!paused) {
+        clock.start()
+    }
 }
 
 function initWorld1() { // goal square level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 30, 6, goalFunction);
     board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
@@ -145,7 +169,7 @@ function initWorld2() { // straight road level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(14, 0, 17.5);
     road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 35, 7);
+    board = new Board(scene, 35, 7, goalFunction);
     board.setGoal(5, 3);
     board.addRoad(road);
     lights = new Lights(scene);
@@ -175,7 +199,7 @@ function initWorld3() { // racetrack level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(30, 0, 12.5);
     road = new Road(scene, roadPos, loadingManager, true);
-    board = new Board(scene, 40, 8);
+    board = new Board(scene, 40, 8, goalFunction);
     board.addRoad(road);
 
     lights = new Lights(scene);
@@ -204,7 +228,7 @@ function initWorld4() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene, 50, 6);
+    board = new Board(scene, 50, 6, goalFunction);
     board.setGoal(4, 4);
     board.addWalls();
 
@@ -232,6 +256,8 @@ function initWorld4() {
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function initWorld5() { // maze level
@@ -239,8 +265,7 @@ function initWorld5() { // maze level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene,100,10);
+    board = new Board(scene, 100, 10, goalFunction);
     board.setGoal(1, 5);
 
     const mazePos = new THREE.Vector3(0, -3, 0);
@@ -248,7 +273,7 @@ function initWorld5() { // maze level
     board.addModel(maze);
 
     lights = new Lights(scene);
-    car = new Car(scene, loadingManager);
+    car = new Car(scene, loadingManager, new THREE.Vector3(5,0,5),new THREE.Euler(0,Math.PI/2,0));
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
 
@@ -268,15 +293,35 @@ function initWorld5() { // maze level
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function update(delta) {
     if (paused) {
         return;
     }
+
     car.update(keyboard, delta);
+
+    if (thirdPersonCam) {
+        // update camera to look at current position of car, with added offsets/rotations
+        car.add(cameraFollow);
+        controls.enabled = false;
+        cameraFollow.add(camera);
+        
+        cameraOrbit.x = cameraOrbit.x + mouse[2].x;
+        cameraOrbit.y = Math.max(Math.min(cameraOrbit.y + mouse[2].y, 0.15), 0) ;
+
+        cameraFollow.setRotationFromEuler(new THREE.Euler(0, -car.rotation.y - cameraOrbit.x*2*Math.PI, -cameraOrbit.y*2*Math.PI));
+        var pos = new THREE.Vector3(30*zoom * 0.1, 50*zoom* 0.1, 30*zoom* 0.1)
+        camera.position.copy(pos);
+        camera.lookAt(car.position);
+    } 
+
     micro.loop();
     board.update(car.corners());
+    clock.update()
 
     if(micro.ultrasonicSensors[0]?.detectForwards() <= 1 ||
         micro.ultrasonicSensors[0]?.detectBackwards() <= 1 ||
@@ -307,6 +352,71 @@ function updateCollisionCount() {
     document.getElementById('collision-count').innerHTML = 'Collisions: ' + collisionCount;
 }
 
+function toggleThirdPerson() {
+    thirdPersonCam = !thirdPersonCam;
+    
+    if (!thirdPersonCam) {
+        cameraFollow.remove(camera);
+        controls.enabled = true;
+        camera.position.set(41, 11, 41); //reset camera to initial position
+        controls.update()
+    }
+}
+
+// manually keep track of mouse movements for rotation/translation when in 3rd person view
+function onDocumentMouseMove(event) {
+    event.preventDefault();
+    mouse[0].x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse[0].y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    if (mouseDown) {
+        mouse[2].x = mouse[0].x - mouse[1].x;
+        mouse[2].y = mouse[0].y - mouse[1].y;
+    }
+    
+    mouse[1].x = mouse[0].x;
+    mouse[1].y = mouse[0].y;
+    clearTimeout(timeout);
+    timeout = setTimeout(function(){mouse[2].x = 0; mouse[2].y = 0;}, 10);
+}
+function onMouseDown(evt) {
+    evt.preventDefault();
+    var isRightMB;
+
+    if ("which" in evt)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+        isRightMB = evt.which == 3; 
+    else if ("button" in evt)  // IE, Opera 
+        isRightMB = evt.button == 2;
+
+    mouseDown = true;
+
+    if (isRightMB && thirdPersonCam) {
+        toggleThirdPerson();
+    }
+}
+function onMouseUp(evt) {
+    evt.preventDefault();
+
+    mouseDown = false;
+}
+function onwheel(evt) {
+    // evt.preventDefault();
+    var delta = 0;
+
+	// normalize the delta
+	if (evt.wheelDelta) {
+
+		// IE and Opera
+		delta = evt.wheelDelta / 60;
+
+	} else if (evt.detail) {
+
+		// W3C
+		delta = -evt.detail / 2;
+	}
+    zoom = Math.max(Math.min(zoom - delta/10, 100),1);
+}
+
 function keyDown(event) {
     if (keyboardControlsEnabled?.getValue()) {
         keyboard[event.keyCode] = true;
@@ -314,10 +424,19 @@ function keyDown(event) {
     if (event.keyCode === 82) { // r key pressed 
         paused = false;
         resetWorld();
+        clock.start();
     }
-    else if (event.keyCode === 80) { // p key pressed
+    else if (event.keyCode === 80 || event.keyCode == 27) { // p key pressed
         paused = !paused;
         document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
+        if (paused) {
+            clock.stop();
+        } else {
+            clock.start();
+        }
+    }
+    else if (event.keyCode === 67) { // c key pressed
+        toggleThirdPerson()
     }
     else if (event.keyCode === 37) { // left arrow key pressed
         if (paused) decrementLevel();
@@ -333,6 +452,9 @@ function resetWorld() {
 
     collisionCount = 0;
     updateCollisionCount();
+
+    clock.reset()
+    document.getElementById('time').style.color = 'red';
 }
 
 function keyUp(event) {
