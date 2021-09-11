@@ -52,7 +52,7 @@ function initThreeJS() {
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
     camera.position.set(41, 11, 41);
     cameraFollow = new THREE.Object3D();
-    thirdPersonCam = true;
+    thirdPersonCam = false;
 
     clock = new THREE.Clock();
     cameraOrbit = new THREE.Vector2();
@@ -288,23 +288,19 @@ function update(delta) {
     car.update(keyboard, delta);
 
     if (thirdPersonCam) {
-
+        // update camera to look at current position of car, with added offsets/rotations
         car.add(cameraFollow);
         controls.enabled = false;
         cameraFollow.add(camera);
         
-        cameraOrbit.x =cameraOrbit.x + mouse[2].x;
-        cameraOrbit.y =Math.max(Math.min(cameraOrbit.y + mouse[2].y, 0.15), 0) ;
+        cameraOrbit.x = cameraOrbit.x + mouse[2].x;
+        cameraOrbit.y = Math.max(Math.min(cameraOrbit.y + mouse[2].y, 0.15), 0) ;
 
         cameraFollow.setRotationFromEuler(new THREE.Euler(0, -car.rotation.y - cameraOrbit.x*2*Math.PI, -cameraOrbit.y*2*Math.PI));
         var pos = new THREE.Vector3(30*zoom * 0.1, 50*zoom* 0.1, 30*zoom* 0.1)
         camera.position.copy(pos);
         camera.lookAt(car.position);
-
-    } else if ((car.children.length) > 0){
-        cameraFollow.remove(camera);
-        controls.enabled = true;
-    }
+    } 
 
     micro.loop();
     board.update(car.corners());
@@ -338,9 +334,19 @@ function updateCollisionCount() {
     document.getElementById('collision-count').innerHTML = 'Collisions: ' + collisionCount;
 }
 
-function onDocumentMouseMove(event) {
+function toggleThirdPerson() {
+    thirdPersonCam = !thirdPersonCam;
     
+    if (!thirdPersonCam) {
+        cameraFollow.remove(camera);
+        controls.enabled = true;
+        camera.position.set(41, 11, 41); //reset camera to initial position
+        controls.update()
+    }
+}
 
+// manually keep track of mouse movements for rotation/translation when in 3rd person view
+function onDocumentMouseMove(event) {
     event.preventDefault();
     mouse[0].x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse[0].y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -355,10 +361,8 @@ function onDocumentMouseMove(event) {
     clearTimeout(timeout);
     timeout = setTimeout(function(){mouse[2].x = 0; mouse[2].y = 0;}, 10);
 }
-
 function onMouseDown(evt) {
     evt.preventDefault();
-
     var isRightMB;
 
     if ("which" in evt)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
@@ -366,20 +370,17 @@ function onMouseDown(evt) {
     else if ("button" in evt)  // IE, Opera 
         isRightMB = evt.button == 2;
 
-
     mouseDown = true;
 
-    if (isRightMB)
-        thirdPersonCam = false;
-
+    if (isRightMB && thirdPersonCam) {
+        toggleThirdPerson();
+    }
 }
-
 function onMouseUp(evt) {
     evt.preventDefault();
 
     mouseDown = false;
 }
-
 function onwheel(evt) {
     // evt.preventDefault();
     var delta = 0;
@@ -411,7 +412,7 @@ function keyDown(event) {
         document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
     }
     else if (event.keyCode === 67) { // c key pressed
-        thirdPersonCam = !thirdPersonCam;
+        toggleThirdPerson()
     }
     else if (event.keyCode === 37) { // left arrow key pressed
         if (paused) decrementLevel();
