@@ -9,6 +9,7 @@ import ColourSensor from './ColourSensor.js';
 import UltrasonicSensor from './UltrasonicSensor.js';
 import Road from './Road.js';
 import Maze from './Maze.js';
+import Stopwatch from './Stopwatch.js';
 
 let scene, camera, controls, mouse, mouseDown, zoom, timeout, cameraOrbit, cameraFollow, thirdPersonCam, renderer, lights, car, board, clock;
 let keyboard = {}, keyboardControlsEnabled;
@@ -47,6 +48,11 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+function goalFunction() {
+    clock.stop()
+    document.getElementById('time').style.color = 'greenyellow';
+}
+
 function initThreeJS() {
     // Camera
     camera = new THREE.PerspectiveCamera(400, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
@@ -54,7 +60,7 @@ function initThreeJS() {
     cameraFollow = new THREE.Object3D();
     thirdPersonCam = false;
 
-    clock = new THREE.Clock();
+    clock = new Stopwatch("time");
     cameraOrbit = new THREE.Vector2();
 
     // Renderer
@@ -116,20 +122,28 @@ function hideLoadingScreen() {
     if (firstLoad) {
         firstLoad = false;
         paused = false;
+
+        resetWorld();
+        clock.start(); // makes sure the clock starts when the page first loads
+    } else {
+        resetWorld();
     }
-    resetWorld();
 }
 
 function initWorld() {
     document.getElementById('collision-count').style.display = 'none'; // collision count is hidden on most levels
+    document.getElementById('time').style.display = 'none'; // similar for stopwatch
     initWorldArray[currentLevel - 1]();
+    if (!paused) {
+        clock.start()
+    }
 }
 
 function initWorld1() { // goal square level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    board = new Board(scene, 30, 6);
+    board = new Board(scene, 30, 6, goalFunction);
     board.setGoal(4, 4);
     lights = new Lights(scene);
     car = new Car(scene, loadingManager);
@@ -155,7 +169,7 @@ function initWorld2() { // straight road level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(14, 0, 17.5);
     road = new Road(scene, roadPos, loadingManager);
-    board = new Board(scene, 35, 7);
+    board = new Board(scene, 35, 7, goalFunction);
     board.setGoal(5, 3);
     board.addRoad(road);
     lights = new Lights(scene);
@@ -185,7 +199,7 @@ function initWorld3() { // racetrack level
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(30, 0, 12.5);
     road = new Road(scene, roadPos, loadingManager, true);
-    board = new Board(scene, 40, 8);
+    board = new Board(scene, 40, 8, goalFunction);
     board.addRoad(road);
 
     lights = new Lights(scene);
@@ -214,7 +228,7 @@ function initWorld4() {
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
     const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene, 50, 6);
+    board = new Board(scene, 50, 6, goalFunction);
     board.setGoal(4, 4);
     board.addWalls();
 
@@ -242,6 +256,8 @@ function initWorld4() {
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function initWorld5() { // maze level
@@ -249,8 +265,7 @@ function initWorld5() { // maze level
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x232323);
     // scene.add(new THREE.AxesHelper(10));
-    // const roadPos = new THREE.Vector3(18, 0, 22.5);
-    board = new Board(scene,100,10);
+    board = new Board(scene, 100, 10, goalFunction);
     board.setGoal(1, 5);
 
     const mazePos = new THREE.Vector3(0, -3, 0);
@@ -278,6 +293,8 @@ function initWorld5() { // maze level
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function update(delta) {
@@ -304,6 +321,7 @@ function update(delta) {
 
     micro.loop();
     board.update(car.corners());
+    clock.update()
 
     if(micro.ultrasonicSensors[0]?.detectForwards() <= 1 ||
         micro.ultrasonicSensors[0]?.detectBackwards() <= 1 ||
@@ -406,10 +424,16 @@ function keyDown(event) {
     if (event.keyCode === 82) { // r key pressed 
         paused = false;
         resetWorld();
+        clock.start();
     }
     else if (event.keyCode === 80 || event.keyCode == 27) { // p key pressed
         paused = !paused;
         document.getElementById('pause-menu').style.display = paused ? 'flex' : 'none';
+        if (paused) {
+            clock.stop();
+        } else {
+            clock.start();
+        }
     }
     else if (event.keyCode === 67) { // c key pressed
         toggleThirdPerson()
@@ -428,6 +452,9 @@ function resetWorld() {
 
     collisionCount = 0;
     updateCollisionCount();
+
+    clock.reset()
+    document.getElementById('time').style.color = 'red';
 }
 
 function keyUp(event) {
