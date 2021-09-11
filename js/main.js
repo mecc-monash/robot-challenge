@@ -50,6 +50,7 @@ function animate() {
 
 function goalFunction() {
     clock.stop()
+    document.getElementById('time').style.color = 'greenyellow';
 }
 
 function initThreeJS() {
@@ -121,6 +122,7 @@ function hideLoadingScreen() {
 
 function initWorld() {
     document.getElementById('collision-count').style.display = 'none'; // collision count is hidden on most levels
+    document.getElementById('time').style.display = 'none'; // similar for stopwatch
     initWorldArray[currentLevel - 1]();
     if (!paused) {
         clock.start()
@@ -244,6 +246,8 @@ function initWorld4() {
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function initWorld5() { // maze level
@@ -280,6 +284,8 @@ function initWorld5() { // maze level
     document.getElementById('collision-count').style.display = 'block';
     collisionCount = 0;
     updateCollisionCount();
+    document.getElementById('time').style.display = 'block';
+    document.getElementById('time').style.color = 'red';
 }
 
 function update(delta) {
@@ -354,6 +360,7 @@ function resetWorld() {
     updateCollisionCount();
 
     clock.reset()
+    document.getElementById('time').style.color = 'red';
 }
 
 function keyUp(event) {
