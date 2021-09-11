@@ -18,6 +18,7 @@ These setup instructions should work on Windows 10, macOS and many Linux distrib
 # User Guide & Controls
 - Press 'p' to pause/unpause and select level
 - Press 'r' to restart the level
+- Press 'c' to switch between third person view or free cam
 - Use the arrow keys, wasd or ijkl to control the car manually.
 - Add code to control the car autonomously inside the `js/Micro.js` file.
 
