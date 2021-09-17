@@ -208,11 +208,11 @@ function initWorld3() { // racetrack level
     carConn = new CarConnection(car);
     micro = new Micro(carConn);
 
-    const frontLeft = new THREE.Vector3(0.30 / 2, 0, 2.025 / 2);
+    const frontLeft = new THREE.Vector3(1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontLeft, board, true);
     micro.addColourSensor(colourSensor);
 
-    const frontRight = new THREE.Vector3(-0.30 / 2, 0, 2.025 / 2);
+    const frontRight = new THREE.Vector3(-1.125 / 2, 0, 2.025 / 2);
     colourSensor = new ColourSensor(car, frontRight, board, true);
     micro.addColourSensor(colourSensor);
 
