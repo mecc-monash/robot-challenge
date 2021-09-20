@@ -23,8 +23,6 @@ class Micro {
 
     loop() {
         // Your code goes here. This function will be run over and over again
-        let left_rgb = this.colourSensors[0]?.readRGB();
-        let right_rgb = this.colourSensors[1]?.readRGB();
     }
 
     millis() {
