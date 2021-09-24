@@ -2,7 +2,7 @@
 class CarConnection {
     constructor(car) {
         this.car = car;
-        this.scaling = 0.5; // max possible percentage of input added to randomness
+        this.scaling = 1; // max possible percentage of input added to randomness
         this.max_speed = 800;
     }
     
@@ -21,11 +21,17 @@ class CarConnection {
             var driveSpeed = this.clamp(newSpeed);
             this.car.diffSpeed.a = driveSpeed + Math.floor(Math.random() * this.scaling*driveSpeed);
         }
+        else{
+            this.car.diffSpeed.a = 0; 
+        }
     }
     setSpeedB(newSpeed) {
         if (newSpeed){
             var driveSpeed = this.clamp(newSpeed);
             this.car.diffSpeed.b = driveSpeed + Math.floor(Math.random() * this.scaling*driveSpeed);
+        }
+        else {
+            this.car.diffSpeed.b = 0; 
         }
     }
 }
