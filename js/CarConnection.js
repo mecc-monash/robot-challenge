@@ -2,8 +2,8 @@
 class CarConnection {
     constructor(car) {
         this.car = car;
-        this.scaling = 1; // max possible percentage of input added to randomness
-        this.max_speed = 800;
+        this.scaling = 0; // max possible percentage of input added to randomness
+        this.max_speed = 1200;
     }
     
     // only set clamp if input speed exceeds max threshold
